@@ -254,6 +254,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     <button data-view="itineraire">Itinéraire</button>
     <button data-view="sorties">Sorties</button>
     <button data-view="activites">Activités</button>
+    <button data-view="hotels">Hôtels</button>
     <button data-view="liens">Liens</button>
     <button data-view="alist">À réserver</button>
     <button data-view="budget">Budget</button>
@@ -340,7 +341,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
         <p class="why">Le cœur du voyage. Du vendredi au mardi, on couvre toutes les cases horaires possibles du match d'ouverture, quel que soit le jour retenu par la Liga.</p>
         <div class="day"><div class="when">Sam 15</div><div><p><span class="tag sport">Sport</span><strong>Journée Bernabéu</strong> (ou dimanche, selon le calendrier) : vous et votre fils au match, avec la visite du stade et du musée avant. Pendant ce temps, le reste de la famille peut faire les barques du parc du Retiro et le Prado (gratuit pour les moins de 18 ans). Churros au San Ginés pour tout le monde ensuite.</p></div></div>
         <div class="day"><div class="when">Dim 16</div><div><p>L'autre moitié de la paire Bernabéu et ville. En soirée, la Plaza Mayor et le marché de San Miguel.</p></div></div>
-        <div class="day"><div class="when">Lun 17</div><div><p><span class="tag kids">Enfants</span><strong>Sortie d'une journée</strong> (voir l'onglet Sorties : Ségovie est mon choix pour vos deux). Partir tôt, sieste pendant la chaleur, souper sur un toit.</p></div></div>
+        <div class="day"><div class="when">Lun 17</div><div><p><span class="tag kids">Enfants</span><strong>Sortie à Ségovie</strong> (choisie) : l'aqueduc romain et le château de l'Alcázar. Partir tôt, sieste pendant la chaleur, souper sur un toit. Les autres options restent dans l'onglet Sorties.</p></div></div>
       </div>
     </details>
 
@@ -368,9 +369,9 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   <section class="view" id="sorties">
     <h2 class="title rv">Sortie d'une journée depuis Madrid</h2>
     <div class="rule rv"></div>
-    <p class="lead rv">Quatre bons choix, tous à courte route de Madrid. Pour des enfants de 9 et 12 ans, mon choix est <strong style="color:var(--ink)">Ségovie</strong> : le château de conte de fées et l'aqueduc romain font mouche à cet âge. À décider sur place.</p>
+    <p class="lead rv">Choix retenu : <strong style="color:var(--ink)">Ségovie</strong>, le meilleur pour des enfants de 9 et 12 ans (château de conte de fées et aqueduc romain). Les trois autres restent de bonnes options si vous changez d'idée sur place.</p>
     <div class="compare rv">
-      <div class="opt pick"><div class="flag">Mon choix</div><h4>Ségovie</h4><div class="m">~1 h de route</div><p>Un aqueduc romain vieux de 2000 ans qu'on approche de près, et l'Alcázar, le château qui aurait inspiré celui de Disney. Agneau rôti pour le dîner. Le plus emballant pour les enfants.</p></div>
+      <div class="opt pick"><div class="flag">Choisi</div><h4>Ségovie</h4><div class="m">~1 h de route</div><p>Un aqueduc romain vieux de 2000 ans qu'on approche de près, et l'Alcázar, le château qui aurait inspiré celui de Disney. Agneau rôti pour le dîner. Le plus emballant pour les enfants.</p></div>
       <div class="opt"><h4>Tolède</h4><div class="m">~45 min de route</div><p>La plus proche et la plus spectaculaire : une cité médiévale entière sur une colline ceinturée par un fleuve, avec une immense cathédrale, des boutiques d'épées et d'armures, et du massepain. Plus dense et plus escarpée à marcher.</p></div>
       <div class="opt"><h4>El Escorial</h4><div class="m">~50 min de route</div><p>Un colossal monastère-palais royal dans les collines plus fraîches au nord-ouest de Madrid. Grandiose et riche en histoire ; l'option plus calme et ombragée un jour de canicule. Le moins amusant des quatre pour les enfants.</p></div>
       <div class="opt"><h4>Ávila</h4><div class="m">~1 h 15 de route</div><p>Les remparts médiévaux les plus complets d'Europe : on peut faire tout le tour sur les murailles. Idéal pour des enfants qui aiment grimper et explorer. Un peu plus loin.</p></div>
@@ -384,6 +385,40 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     <div class="rule rv"></div>
     <p class="lead rv">Des options en plus par ville, à choisir sur place. Coche celles qui vous tentent : celles qui demandent une réservation s'ajoutent toutes seules à l'onglet <strong style="color:var(--ink)">À réserver</strong>.</p>
     <div id="act-list" class="rv"></div>
+  </section>
+
+  <!-- HÔTELS -->
+  <section class="view" id="hotels">
+    <h2 class="title rv">Où dormir</h2>
+    <div class="rule rv"></div>
+    <p class="lead rv">Une sélection par ville, orientée famille et budget raisonnable. Prix indicatifs pour 4 personnes en août, à confirmer au moment de réserver. Chaque choix ouvre une recherche pour comparer et réserver.</p>
+
+    <div class="lgroup rv">
+      <h3>Barcelone (sans voiture, plein centre)</h3>
+      <a class="litem" href="https://www.google.com/search?q=Novotel+Barcelona+City+booking" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Novotel Barcelona City</span><span class="ld2">Eixample · ~190 €/nuit · piscine intérieure, petit-déjeuner enfants gratuit, à pied de la Sagrada Família</span></span><span class="lg2">Chercher →</span></a>
+      <a class="litem" href="https://www.google.com/search?q=Midtown+Apartments+Barcelona+Eixample" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Midtown Apartments</span><span class="ld2">Eixample · ~180 €/nuit · appartement avec cuisine et piscine sur le toit ; malin pour le budget (repas maison)</span></span><span class="lg2">Chercher →</span></a>
+      <a class="litem" href="https://www.google.com/search?q=Catalonia+Plaza+Catalunya+hotel" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Catalonia Plaza Catalunya</span><span class="ld2">Plein centre · ~210 €/nuit · grandes chambres familiales, piscine extérieure</span></span><span class="lg2">Chercher →</span></a>
+    </div>
+
+    <div class="lgroup rv">
+      <h3>Madrid (avec la voiture : stationnement essentiel)</h3>
+      <a class="litem" href="https://www.google.com/search?q=ibis+Styles+Madrid+Prado" target="_blank" rel="noopener"><span class="lm"><span class="lt2">ibis Styles Madrid Prado</span><span class="ld2">Centre · ~150 €/nuit · stationnement intérieur privé, près du Prado et de Plaza Mayor</span></span><span class="lg2">Chercher →</span></a>
+      <a class="litem" href="https://www.google.com/search?q=Hotel+Mayorazgo+Madrid" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Hotel Mayorazgo</span><span class="ld2">Près de Gran Vía · ~160 €/nuit · garage sur place, chambres familiales</span></span><span class="lg2">Chercher →</span></a>
+      <a class="litem" href="https://www.booking.com/parking/city/es/madrid.html" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Autres hôtels avec garage</span><span class="ld2">Le centre est une zone à faibles émissions : viser un hôtel avec stationnement réservé</span></span><span class="lg2">Voir →</span></a>
+    </div>
+
+    <div class="lgroup rv">
+      <h3>Valence (piscine et plage)</h3>
+      <a class="litem" href="https://www.google.com/search?q=appartement+Malvarrosa+Beach+Valencia+piscine+parking" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Appartements Malvarrosa Beach</span><span class="ld2">Près de la plage · ~150 €/nuit · cuisine et parking, à quelques minutes de la Malvarrosa</span></span><span class="lg2">Chercher →</span></a>
+      <a class="litem" href="https://www.google.com/search?q=Hotel+Las+Arenas+Balneario+Resort+Valencia" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Hotel Las Arenas Balneario Resort</span><span class="ld2">Front de mer · ~320 €/nuit · 5 étoiles, piscines face à la plage, l'option gâterie</span></span><span class="lg2">Chercher →</span></a>
+    </div>
+
+    <div class="lgroup rv">
+      <h3>Dernière nuit (aéroport de Barcelone)</h3>
+      <a class="litem" href="https://www.google.com/search?q=hotel+aeroport+Barcelone+El+Prat+ibis+Barcelo" target="_blank" rel="noopener"><span class="lm"><span class="lt2">Hôtel près de l'aéroport El Prat</span><span class="ld2">~100 €/nuit · ibis ou Barceló Aeropuerto, pratique pour le vol du matin</span></span><span class="lg2">Chercher →</span></a>
+    </div>
+
+    <div class="hint">Astuce budget : à Valence, un appartement avec cuisine fait vraiment baisser la facture des repas. À Madrid, réserver tôt (fin de semaine d'ouverture de la Liga) et viser un garage réservé.</div>
   </section>
 
   <!-- LIENS -->
