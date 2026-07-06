@@ -1,12 +1,12 @@
 {
-  "name": "Espagne 2026",
-  "short_name": "Espagne 2026",
-  "description": "Planificateur de voyage familial",
+  "name": "Spain 2026",
+  "short_name": "Spain 2026",
+  "description": "Family trip planner",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "lang": "fr",
+  "lang": "en",
   "background_color": "#0D0D0F",
   "theme_color": "#0D0D0F",
   "icons": [
