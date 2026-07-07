@@ -323,7 +323,17 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 .bmeta{display:flex;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);margin:1.2rem 0;flex-wrap:wrap;}
 .bm{flex:1;min-width:130px;background:var(--panel);padding:1rem 1.1rem;}
 .bm .k{text-transform:uppercase;letter-spacing:.12em;font-size:.62rem;color:var(--dim);}
-.bm .v{font-family:var(--font-head);font-size:1.6rem;margin-top:.15rem;font-variant-numeric:tabular-nums;}
+.bm .v{font-family:var(--font-head);font-size:1.5rem;margin-top:.15rem;font-variant-numeric:tabular-nums;}
+.blist{border:1px solid var(--line-soft);border-radius:10px;padding:0 1rem;background:var(--panel);}
+.brow{padding:.95rem 0;border-bottom:1px solid var(--line-soft);}
+.brow:last-child{border-bottom:none;}
+.brow-h{display:flex;align-items:baseline;gap:.7rem;}
+.brow-h .bi{font-weight:600;font-size:.96rem;flex:1;min-width:0;}
+.brow-h .be{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.brow .bd{color:var(--dim);font-size:.8rem;margin-top:.25rem;line-height:1.45;}
+.brow .ba{display:flex;align-items:center;gap:.6rem;margin-top:.6rem;}
+.brow .ba label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);}
+.brow .ba .actual{width:7.5rem;}
 .tablebox{overflow-x:auto;border:1px solid var(--line-soft);border-top:2px solid var(--accent);}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
 th,td{text-align:left;padding:.72rem .85rem;border-bottom:1px solid var(--line-soft);font-size:.9rem;}
@@ -548,13 +558,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
       <div class="bm"><div class="k">Your actuals</div><div class="v" id="actTotal">$0</div></div>
       <div class="bm"><div class="k">Left to price</div><div class="v" id="remainCount">&mdash;</div></div>
     </div>
-    <div class="tablebox rv">
-      <table>
-        <thead><tr><th>Item</th><th>Detail</th><th class="num">Estimate</th><th class="num">Actual</th></tr></thead>
-        <tbody id="budget-rows"></tbody>
-        <tfoot><tr><td>Total</td><td></td><td class="num" id="estFoot">&mdash;</td><td class="num" id="actFoot">$0</td></tr></tfoot>
-      </table>
-    </div>
+    <div id="budget-rows" class="blist rv"></div>
     <div class="hint rv"><strong>Flights are the big swing.</strong> The open-jaw Air Canada fare (into Barcelona, out of Madrid) drives the total; drop your real price in and the rest is comfortably mid-range.</div>
     <button class="iconbtn" id="resetBudget" style="margin-top:.5rem;">Clear my amounts</button>
   </section>
@@ -929,9 +933,14 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   function renderBudget(){
     var rows=document.getElementById('budget-rows'),act=get('spain_budget',{});rows.innerHTML='';
     BUDGET.forEach(function(b){
-      var tr=document.createElement('tr'),val=act[b.id]!=null?act[b.id]:'';
-      tr.innerHTML='<td><strong>'+b.item+'</strong></td><td style="color:var(--dim);font-size:.82rem;">'+b.note+'</td><td class="num">'+b.est+'</td><td class="num"><input class="actual" inputmode="numeric" placeholder="&mdash;" value="'+val+'" data-id="'+b.id+'"></td>';
-      rows.appendChild(tr);
+      var val=act[b.id]!=null?act[b.id]:'';
+      var d=document.createElement('div');d.className='brow';
+      d.innerHTML='<div class="brow-h"><span class="bi"></span><span class="be"></span></div><div class="bd"></div><div class="ba"><label>Your actual $</label><input class="actual" inputmode="numeric" placeholder="&mdash;" data-id="'+b.id+'"></div>';
+      d.querySelector('.bi').textContent=b.item;
+      d.querySelector('.be').textContent=b.est;
+      d.querySelector('.bd').textContent=b.note;
+      d.querySelector('.actual').value=val;
+      rows.appendChild(d);
     });
     rows.querySelectorAll('.actual').forEach(function(inp){
       inp.addEventListener('input',function(){var a=get('spain_budget',{}),raw=inp.value.replace(/[^0-9.]/g,'');if(raw==='')delete a[inp.dataset.id];else a[inp.dataset.id]=parseFloat(raw);set('spain_budget',a);progBudget();});
@@ -941,9 +950,8 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   function progBudget(){
     var lo=BUDGET.reduce(function(a,b){return a+b.lo;},0),hi=BUDGET.reduce(function(a,b){return a+b.hi;},0),act=get('spain_budget',{});
     var a=BUDGET.reduce(function(s,b){return s+(act[b.id]||0);},0),priced=BUDGET.filter(function(b){return act[b.id]!=null;}).length;
-    var es=money(lo)+' - '+money(hi);
-    document.getElementById('estTotal').textContent=es;document.getElementById('estFoot').textContent=es;
-    document.getElementById('actTotal').textContent=money(a);document.getElementById('actFoot').textContent=money(a);
+    document.getElementById('estTotal').textContent=money(lo)+' - '+money(hi);
+    document.getElementById('actTotal').textContent=money(a);
     document.getElementById('remainCount').textContent=(BUDGET.length-priced)+' / '+BUDGET.length;
   }
   document.getElementById('resetBudget').addEventListener('click',function(){set('spain_budget',{});renderBudget();toast('Amounts cleared');});
@@ -1088,7 +1096,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   });
 
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 11';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 12';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
