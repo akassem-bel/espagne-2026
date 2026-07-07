@@ -328,7 +328,7 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 .brow{padding:.95rem 0;border-bottom:1px solid var(--line-soft);}
 .brow:last-child{border-bottom:none;}
 .brow-h{display:flex;align-items:baseline;gap:.7rem;}
-.brow-h .bi{font-weight:600;font-size:.96rem;flex:1;min-width:0;}
+.brow-h .bi{font-weight:600;font-size:.96rem;flex:1;min-width:0;color:var(--accent);}
 .brow-h .be{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .brow .bd{color:var(--dim);font-size:.8rem;margin-top:.25rem;line-height:1.45;}
 .brow .ba{display:flex;align-items:center;gap:.6rem;margin-top:.6rem;}
@@ -552,15 +552,14 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   <section class="view" id="budget">
     <h2 class="title rv">Budget</h2>
     <div class="rule rv"></div>
-    <p class="lead rv">Estimates for a family of four, in Canadian dollars. Enter the real prices as you go: the total updates and syncs across phones.</p>
+    <p class="lead rv">Family of four, in Canadian dollars. Enter real prices as you go; totals sync across phones.</p>
     <div class="bmeta rv">
       <div class="bm"><div class="k">Estimated total</div><div class="v" id="estTotal">&mdash;</div></div>
       <div class="bm"><div class="k">Your actuals</div><div class="v" id="actTotal">$0</div></div>
       <div class="bm"><div class="k">Left to price</div><div class="v" id="remainCount">&mdash;</div></div>
     </div>
     <div id="budget-rows" class="blist rv"></div>
-    <div class="hint rv"><strong>Flights are the big swing.</strong> The open-jaw Air Canada fare (into Barcelona, out of Madrid) drives the total; drop your real price in and the rest is comfortably mid-range.</div>
-    <button class="iconbtn" id="resetBudget" style="margin-top:.5rem;">Clear my amounts</button>
+    <button class="iconbtn" id="resetBudget" style="margin-top:1rem;">Clear my amounts</button>
   </section>
 
   <!-- PACKING -->
@@ -599,7 +598,6 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     <button class="iconbtn" id="exp-export" style="margin-top:1rem;">Export to Excel (CSV)</button>
   </section>
 
-  <footer><div class="foot-in"><strong>Spain 2026 &middot; family trip plan</strong><br>Draft plan for the family. Figures are estimates: confirm prices when booking. Everything you check syncs live across phones; theme stays per device.</div></footer>
 </main>
 
 <nav id="tabbar">
@@ -1096,7 +1094,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   });
 
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 12';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 13';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
