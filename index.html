@@ -142,6 +142,23 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 @keyframes tldraw{to{stroke-dashoffset:0;}}
 @media (prefers-reduced-motion:reduce){.tl-seg{stroke-dashoffset:0;animation:none;}.tl-node{opacity:1;animation:none;}}
 
+/* each-day options */
+.daysel{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:1.2rem;scrollbar-width:none;}
+.daysel::-webkit-scrollbar{display:none;}
+.daychip{flex:0 0 auto;border:1px solid var(--line);border-radius:12px;padding:.55rem .9rem;cursor:pointer;text-align:center;background:var(--panel);transition:border-color .15s,background .15s;}
+.daychip .dn{font-family:var(--font-head);font-size:1.25rem;line-height:1;}
+.daychip .dl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-top:.2rem;}
+.daychip.active{border-color:var(--accent);background:linear-gradient(160deg,rgba(240,59,66,0.12),var(--panel));}
+.daychip.active .dl{color:var(--accent);}
+.dayhead{font-family:var(--font-head);font-size:1.5rem;margin:.2rem 0 1rem;}
+.opt-row{display:flex;gap:.9rem;padding:1rem 0;border-bottom:1px solid var(--line-soft);}
+.opt-row:last-child{border-bottom:none;}
+.opt-ty{flex:0 0 4.4rem;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);padding-top:.2rem;}
+.opt-ty.gem{color:var(--accent);}
+.opt-b{flex:1;display:flex;flex-direction:column;gap:.25rem;}
+.opt-b .ol{font-weight:600;font-size:.95rem;}
+.opt-b .od{font-size:.86rem;color:var(--dim);line-height:1.5;}
+
 .match{border:1px solid var(--line);border-left:2px solid var(--accent);background:linear-gradient(105deg,rgba(240,59,66,0.09),var(--panel));padding:1.5rem 1.6rem;margin:1.9rem 0;}
 .match .mk{text-transform:uppercase;letter-spacing:.18em;font-size:.68rem;font-weight:600;color:var(--accent);}
 .match h3{font-family:var(--font-head);font-weight:400;font-size:1.9rem;line-height:1.04;margin:.4rem 0 0;}
@@ -270,6 +287,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   <nav class="tabs"><div class="tabs-in" id="tabs">
     <button data-view="apercu" class="active">Overview</button>
     <button data-view="itineraire">Itinerary</button>
+    <button data-view="byday">Each day</button>
     <button data-view="around">Getting around</button>
     <button data-view="sorties">Day trips</button>
     <button data-view="activites">Activities</button>
@@ -365,6 +383,15 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
         <div class="day"><div class="when">Wed 19</div><div><p>Drop the car at Madrid-Barajas airport, fly home to Montréal.<span class="maps"><a href="https://www.google.com/maps/dir/?api=1&origin=Madrid+Spain&destination=Adolfo+Suarez+Madrid+Barajas+Airport&travelmode=driving" target="_blank" rel="noopener">Google route</a><a href="https://maps.apple.com/?saddr=Madrid&daddr=Madrid+Barajas+Airport&dirflg=d" target="_blank" rel="noopener">Apple route</a></span></p></div></div>
       </div>
     </details>
+  </section>
+
+  <!-- EACH DAY -->
+  <section class="view" id="byday">
+    <h2 class="title rv">Each day, your options</h2>
+    <div class="rule rv"></div>
+    <p class="lead rv">Pick a day for a few ways to play it, plus a hidden gem or two. Tap a map pill to navigate, or tap a point on the Overview timeline to land here.</p>
+    <div class="daysel rv" id="daysel"></div>
+    <div id="day-detail" class="rv"></div>
   </section>
 
   <!-- GETTING AROUND -->
@@ -568,7 +595,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     s+='<text class="tl-city" x="'+((X(15)+X(19))/2).toFixed(1)+'" y="'+(y-22)+'" text-anchor="middle">Madrid</text>';
     TL.forEach(function(n,i){
       var x=X(n.d).toFixed(1),m=n.star;
-      s+='<g class="tl-node" style="animation-delay:'+(0.3+i*0.06).toFixed(2)+'s">';
+      s+='<g class="tl-node" data-d="'+n.d+'" style="animation-delay:'+(0.3+i*0.06).toFixed(2)+'s">';
       if(m){s+='<circle class="tl-halo" cx="'+x+'" cy="'+y+'" r="9"><animate attributeName="r" values="9;17;9" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.2s" repeatCount="indefinite"/></circle>';}
       s+='<circle class="tl-dot'+(m?' match':'')+'" cx="'+x+'" cy="'+y+'" r="'+(m?7:5)+'"/>';
       s+='<text class="tl-day" x="'+x+'" y="'+(y+28)+'" text-anchor="middle">'+n.d+'</text>';
@@ -577,7 +604,91 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     });
     s+='</svg>';
     host.innerHTML=s;
-    host.querySelectorAll('.tl-node').forEach(function(g){g.addEventListener('click',function(){show('itineraire');});});
+    host.querySelectorAll('.tl-node').forEach(function(g){g.addEventListener('click',function(){var d=parseInt(g.getAttribute('data-d'),10);selectDay(d>=12?d:12);});});
+  }
+
+  /* each-day options */
+  var DAYS=[
+    {d:12,lab:'Arrive',title:'Arrival day, keep it easy',opts:[
+      {ty:'Tip',label:'Beat the jet lag',desc:'Drop bags, stay in the Gothic Quarter, early tapas dinner around 7:30pm, everyone down early.'},
+      {ty:'See',label:'Barri Gòtic + Barcelona Cathedral',desc:'Medieval lanes, the cathedral cloister with its geese, Plaça Reial.',q:'Barcelona Cathedral'},
+      {ty:'Gem',label:'El Bosc de les Fades',desc:'A tucked-away fairy-forest themed café off La Rambla, trees and grottoes inside. The kids will love it.',q:'El Bosc de les Fades Barcelona'},
+      {ty:'Gem',label:'MUHBA underground Roman ruins',desc:'Under Plaça del Rei, walk the streets of Roman Barcino below the city. Quiet and jaw-dropping.',q:'MUHBA Placa del Rei Barcelona'},
+      {ty:'Eat',label:'Hot chocolate on Carrer Petritxol',desc:'A narrow lane famous for thick xocolata and churros at Dulcinea.',q:'Carrer de Petritxol Barcelona'}
+    ]},
+    {d:13,lab:'Gaudí',title:'Gaudí day',opts:[
+      {ty:'See',label:'Sagrada Família',desc:'Go at opening with a timed ticket booked ahead; the mid-morning light through the windows is the moment.',q:'Sagrada Familia Barcelona'},
+      {ty:'See',label:'Park Güell',desc:'Late afternoon when the heat drops: the mosaic terrace and the city view.',q:'Park Güell Barcelona'},
+      {ty:'Gem',label:'Hospital de Sant Pau',desc:'A whole modernista complex of mosaic pavilions, 10 min from the Sagrada and blissfully uncrowded.',q:'Hospital de Sant Pau Barcelona'},
+      {ty:'Gem',label:'Bunkers del Carmel',desc:'Old Civil War anti-aircraft bunkers on a hilltop: the best free 360° sunset view in the city. Bring snacks.',q:'Bunkers del Carmel Barcelona'},
+      {ty:'Eat',label:'Tapas around Plaça del Sol, Gràcia',desc:'Leafy squares full of local terraces, relaxed for kids in the evening.',q:'Plaça del Sol Barcelona'}
+    ]},
+    {d:14,lab:'Beach',title:'Beach + Montjuïc',opts:[
+      {ty:'Do',label:'Bogatell beach (calmer than Barceloneta)',desc:'A bit north, wider and less crowded, better for families. Morning swim.',q:'Bogatell Beach Barcelona'},
+      {ty:'Eat',label:'La Boqueria market lunch',desc:'Stools at Bar Pinotxo or El Quim for fresh plates. Go before 1pm to beat the crush.',q:'Mercat de la Boqueria Barcelona'},
+      {ty:'See',label:'Montjuïc: cable car + Magic Fountain',desc:'Cable car up for the view, castle at the top, and the Magic Fountain light show after dark.',q:'Montjuïc Cable Car Barcelona'},
+      {ty:'Gem',label:'Refugi 307 air-raid shelter',desc:'A real Civil War bomb shelter dug into Montjuïc, guided visit. Vivid history for a 12-year-old.',q:'Refugi 307 Barcelona'},
+      {ty:'Gem',label:'Carrer de Blai pintxos street',desc:'Poble Sec lane of one-euro pintxos bars: cheap, fun, pick-as-you-go family dinner.',q:'Carrer de Blai Barcelona'},
+      {ty:'Do',label:'Ciutadella park rowboats',desc:'Row the little lake and see the monumental fountain: an easy win with kids.',q:'Parc de la Ciutadella Barcelona'}
+    ]},
+    {d:15,lab:'Drive',title:'Barcelona to Madrid, via Zaragoza',opts:[
+      {ty:'Tip',label:'Leave by 8 to 9am',desc:'About 6 h with the stop. Book Madrid hotel parking ahead (low-emission zone).'},
+      {ty:'See',label:'Basílica del Pilar, Zaragoza',desc:'Riverfront basilica with frescoed domes; climb a tower for the view. The natural lunch halt.',q:'Basílica del Pilar Zaragoza'},
+      {ty:'Gem',label:'Aljafería Palace, Zaragoza',desc:'A dazzling 11th-century Moorish palace most people miss. If you have 90 minutes, do it.',q:'Aljafería Zaragoza'},
+      {ty:'Eat',label:'Tapas in El Tubo, Zaragoza',desc:'A warren of tiny tapas bars in the old town, a few blocks from the basilica.',q:'El Tubo Zaragoza'},
+      {ty:'Gem',label:'Madrid arrival: Mercado de San Fernando',desc:'Skip touristy San Miguel; this Lavapiés market is where locals actually eat and drink.',q:'Mercado de San Fernando Madrid'}
+    ]},
+    {d:16,lab:'Match',title:'Match day',opts:[
+      {ty:'Do',label:'Real Madrid vs Real Sociedad',desc:'The opener at the Bernabéu, you and your son. Arrive early (metro L10 Santiago Bernabéu) for the buildup.',q:'Santiago Bernabeu Madrid'},
+      {ty:'Gem',label:'El Rastro flea market (Sunday morning)',desc:'Madrid’s huge open-air Sunday market in La Latina, perfect before an afternoon or evening kickoff.',q:'El Rastro Madrid'},
+      {ty:'Eat',label:'Tapas crawl on Cava Baja',desc:'The classic La Latina tapas street: hop a few bars for lunch.',q:'Calle Cava Baja Madrid'},
+      {ty:'Gem',label:'Rooftop at Círculo de Bellas Artes',desc:'The best rooftop view over the city for a pre- or post-match drink (soft drinks for the kids).',q:'Círculo de Bellas Artes Madrid'}
+    ]},
+    {d:17,lab:'Segovia',title:'Segovia day trip',opts:[
+      {ty:'See',label:'Roman Aqueduct',desc:'2,000 years old, no mortar, towering over the plaza. Walk right under it.',q:'Aqueduct of Segovia'},
+      {ty:'See',label:'Alcázar of Segovia',desc:'The ship-prow castle said to have inspired Disney’s. Climb the tower.',q:'Alcázar of Segovia'},
+      {ty:'Gem',label:'Mirador de la Pradera de San Marcos',desc:'The meadow below town with the postcard view of the Alcázar rising on its rock. Few tourists.',q:'Pradera de San Marcos Segovia'},
+      {ty:'Gem',label:'La Granja de San Ildefonso',desc:'A mini-Versailles 11 km away: royal palace and baroque fountain gardens. A cool, green surprise.',q:'Palacio Real de La Granja de San Ildefonso'},
+      {ty:'Eat',label:'Cochinillo (roast suckling pig)',desc:'Segovia’s dish, carved with a plate’s edge. Mesón de Cándido by the aqueduct is the landmark.',q:'Mesón de Cándido Segovia'},
+      {ty:'Tip',label:'Go early',desc:'About 1 h drive; arrive before the heat and the coach tours.'}
+    ]},
+    {d:18,lab:'Madrid',title:'Bernabéu tour + the city',opts:[
+      {ty:'Do',label:'Bernabéu stadium tour + museum',desc:'Morning slot: pitch-side, the trophy room, the panoramic. Separate from the match, book ahead.',q:'Santiago Bernabeu Madrid'},
+      {ty:'See',label:'Retiro Park + Crystal Palace',desc:'Row the lake, then the glass Palacio de Cristal. Green and shady.',q:'Palacio de Cristal Retiro Madrid'},
+      {ty:'See',label:'Museo del Prado',desc:'Free for under-18s. A focused 90 min: Velázquez, Goya, and Bosch’s Garden of Earthly Delights.',q:'Museo del Prado Madrid'},
+      {ty:'Gem',label:'Templo de Debod',desc:'A real ancient Egyptian temple gifted to Spain, mirrored in its pool at sunset. Free.',q:'Templo de Debod Madrid'},
+      {ty:'Gem',label:'Ermita de San Antonio de la Florida',desc:'Goya painted the ceiling here and is buried beneath it. Tiny, free, almost empty.',q:'Ermita de San Antonio de la Florida Madrid'},
+      {ty:'Eat',label:'Churros con chocolate, San Ginés',desc:'The 1894 institution, open late. Non-negotiable with kids.',q:'Chocolatería San Ginés Madrid'}
+    ]},
+    {d:19,lab:'Home',title:'Departure day',opts:[
+      {ty:'Gem',label:'El Capricho park (beside the airport)',desc:'Madrid’s most beautiful and least-known park, a short hop from Barajas. A calm last stroll before the car drop.',q:'Parque El Capricho Madrid'},
+      {ty:'Eat',label:'One last churros or a market breakfast',desc:'Somewhere near your hotel before you check out.'},
+      {ty:'Tip',label:'Airport buffer',desc:'Allow 45 to 60 min to Barajas plus time to return the car; fill the tank near the airport first.',q:'Adolfo Suarez Madrid Barajas Airport'}
+    ]}
+  ];
+  var curDay=parseInt(get('spain_day',12),10);
+  function selectDay(d){curDay=d;set('spain_day',d);renderDaySel();renderDay(d);show('byday');}
+  function renderDaySel(){
+    var box=document.getElementById('daysel');if(!box)return;box.innerHTML='';
+    DAYS.forEach(function(x){
+      var el=document.createElement('div');el.className='daychip'+(x.d===curDay?' active':'');
+      el.innerHTML='<div class="dn">'+x.d+'</div><div class="dl">'+x.lab+'</div>';
+      el.addEventListener('click',function(){curDay=x.d;set('spain_day',x.d);renderDaySel();renderDay(x.d);});
+      box.appendChild(el);
+    });
+  }
+  function renderDay(d){
+    var box=document.getElementById('day-detail');if(!box)return;
+    var day=DAYS.filter(function(x){return x.d===d;})[0]||DAYS[0];
+    box.innerHTML='<div class="dayhead"></div>';
+    box.querySelector('.dayhead').textContent='Aug '+day.d+' · '+day.title;
+    day.opts.forEach(function(o){
+      var row=document.createElement('div');row.className='opt-row';
+      var maps=o.q?('<span class="maps"><a href="'+gmap(o.q)+'" target="_blank" rel="noopener">Google</a><a href="'+amap(o.q)+'" target="_blank" rel="noopener">Apple</a></span>'):'';
+      row.innerHTML='<span class="opt-ty'+(o.ty==='Gem'?' gem':'')+'">'+(o.ty==='Gem'?'Hidden gem':o.ty)+'</span><span class="opt-b"><span class="ol"></span><span class="od"></span>'+maps+'</span>';
+      row.querySelector('.ol').textContent=o.label;row.querySelector('.od').textContent=o.desc;
+      box.appendChild(row);
+    });
   }
 
   /* checklist */
@@ -718,7 +829,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     document.getElementById('packFill').style.width=p+'%';document.getElementById('packLabel').textContent=d+' of '+k.length+' done · '+p+'%';}
   document.getElementById('resetPack').addEventListener('click',function(){set('spain_pack',{});renderPack();toast('List reset');});
 
-  renderCheck();renderBudget();renderPack();renderActivities();buildTimeline();
+  renderCheck();renderBudget();renderPack();renderActivities();buildTimeline();renderDaySel();renderDay(curDay);
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
