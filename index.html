@@ -80,6 +80,7 @@ header.top{position:sticky;top:0;z-index:50;background:var(--header-bg);-webkit-
 .mast .brand{font-family:var(--font-head);font-size:1.5rem;line-height:1;}
 .mast .brand .sep{color:var(--accent);}
 .mast .meta{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:.28rem;}
+.mast .meta #synced{color:var(--accent);}
 .mast .sp{margin-left:auto;}
 .icons{display:flex;gap:.5rem;}
 .iconbtn{font-family:var(--font-body);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
@@ -244,7 +245,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   <div class="mast">
     <div>
       <div class="brand">Spain <span class="sep">·</span> 2026</div>
-      <div class="meta">Family trip &middot; Aug 10&ndash;23</div>
+      <div class="meta">Family trip &middot; Aug 10&ndash;23<span id="synced"></span></div>
     </div>
     <div class="sp"></div>
     <div class="icons"><button class="iconbtn ico" id="themeBtn" aria-label="Toggle light / dark" title="Light / dark"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><button class="iconbtn solid" id="shareBtn">Share</button></div>
@@ -510,12 +511,27 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
 
 <div id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
 (function(){
   "use strict";
   var LS=window.localStorage;
+  var FB={
+    apiKey:"AIzaSyAUgMyz-SuyfqFinWrrXa6n7USltazMaMs",
+    authDomain:"spain2026trip-be2f1.firebaseapp.com",
+    databaseURL:"https://spain2026trip-be2f1-default-rtdb.firebaseio.com",
+    projectId:"spain2026trip-be2f1",
+    storageBucket:"spain2026trip-be2f1.firebasestorage.app",
+    messagingSenderId:"116248732051",
+    appId:"1:116248732051:web:96c0a381140fe585280866"
+  };
+  var ROOM='trip/main-9f3a7c2e';
+  var SYNC={spain_check:'check',spain_budget:'budget',spain_act:'act',spain_pack:'pack'};
+  var db=null,fbReady=false,applyingRemote=false;
   function get(k,d){try{var v=LS.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
-  function set(k,v){try{LS.setItem(k,JSON.stringify(v));}catch(e){}}
+  function set(k,v){try{LS.setItem(k,JSON.stringify(v));}catch(e){}
+    if(fbReady&&!applyingRemote&&SYNC[k]){try{db.ref(ROOM+'/'+SYNC[k]).set(v);}catch(e){}}}
 
   /* theme */
   var root=document.documentElement;
@@ -692,6 +708,30 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   document.getElementById('resetPack').addEventListener('click',function(){set('spain_pack',{});renderPack();toast('List reset');});
 
   renderCheck();renderBudget();renderPack();renderActivities();
+
+  /* ---- realtime sync (Firebase Realtime Database) ---- */
+  function initSync(){
+    if(typeof firebase==='undefined')return; /* SDK blocked (e.g. artifact CSP) -> local only */
+    try{
+      firebase.initializeApp(FB);
+      db=firebase.database();
+      fbReady=true;
+      var first=true;
+      db.ref(ROOM).on('value',function(snap){
+        var d=snap.val();
+        if(d==null){ /* empty room: seed it from this device */
+          Object.keys(SYNC).forEach(function(k){var v=get(k,null);if(v!=null){try{db.ref(ROOM+'/'+SYNC[k]).set(v);}catch(e){}}});
+          return;
+        }
+        applyingRemote=true;
+        Object.keys(SYNC).forEach(function(k){if(d[SYNC[k]]!=null)LS.setItem(k,JSON.stringify(d[SYNC[k]]));});
+        applyingRemote=false;
+        renderCheck();renderBudget();renderPack();renderActivities();
+        if(first){var s=document.getElementById('synced');if(s)s.textContent=' · live sync';toast('Live sync on');first=false;}
+      });
+    }catch(e){}
+  }
+  initSync();
 
   /* ---- dot-matrix background (deck signature) ---- */
   var cv=document.getElementById('dotsbg'),cx=cv.getContext('2d');
