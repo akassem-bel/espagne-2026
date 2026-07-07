@@ -196,7 +196,27 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 .countdown{border:1px solid var(--line-soft);border-radius:12px;background:linear-gradient(160deg,var(--wash),var(--panel));padding:1.5rem;text-align:center;margin:1.5rem 0;}
 .countdown .cd-n{font-family:var(--font-head);font-size:3.8rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;}
 .countdown .cd-l{text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--muted);margin-top:.4rem;font-weight:600;}
-.countdown .cd-sub{color:var(--dim);font-size:.82rem;margin-top:.75rem;}
+.countdown .cd-sub{color:var(--muted);font-size:.82rem;margin-top:.75rem;}
+.hstats{display:flex;gap:.6rem;margin:1.4rem 0 .2rem;}
+.hstat{flex:1;border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);padding:.9rem 1rem;cursor:pointer;transition:border-color .18s,transform .09s var(--ease);}
+.hstat:hover{border-color:var(--accent);}
+.hstat:active{transform:scale(.985);}
+.hstat .hk{text-transform:uppercase;letter-spacing:.12em;font-size:.6rem;color:var(--muted);}
+.hstat .hv{font-family:var(--font-head);font-size:1.7rem;margin:.15rem 0 .55rem;font-variant-numeric:tabular-nums;line-height:1;}
+.hstat .hv small{font-size:1rem;color:var(--dim);}
+.hstat .hbar{height:3px;background:var(--line);border-radius:999px;overflow:hidden;}
+.hstat .hbar>span{display:block;height:100%;background:var(--accent);width:0;transition:width .5s var(--ease);}
+.hnext{border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);margin:1rem 0;overflow:hidden;}
+.hn-h{font-size:.62rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);font-weight:700;padding:.85rem 1rem .5rem;}
+.hn-i{display:flex;gap:.7rem;align-items:center;padding:.8rem 1rem;border-top:1px solid var(--line-soft);cursor:pointer;font-size:.93rem;}
+.hn-i:active{background:var(--panel-2);}
+.hn-w{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);flex-shrink:0;}
+.hn-t{flex:1;min-width:0;}
+.hn-arr{margin-left:auto;color:var(--dim);font-size:1.15rem;}
+.hn-done{padding:.95rem 1rem;color:var(--muted);font-size:.9rem;}
+.exp-grand{text-align:center;border:1px solid var(--line-soft);border-radius:10px;background:linear-gradient(160deg,var(--wash),var(--panel));padding:1.1rem;margin:0 0 1.3rem;}
+.exp-grand .k{text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;color:var(--muted);}
+.exp-grand .v{font-family:var(--font-head);font-size:2.6rem;line-height:1;color:var(--accent);margin-top:.25rem;font-variant-numeric:tabular-nums;}
 
 /* timeline */
 .tl-wrap{margin:1.8rem 0 .6rem;overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -416,38 +436,25 @@ main .card + .card{margin-top:1rem;}
     <div class="kick rv">Family trip &middot; 8 days</div>
     <h1 class="title rv" style="animation-delay:.05s">Eight days in <em>Spain</em>, August 11&ndash;19, 2026</h1>
     <div class="rule rv" style="animation-delay:.1s"></div>
-    <p class="lead rv" style="animation-delay:.14s">Barcelona first, then Madrid for the Real Madrid season opener. A short, punchy trip for a 9- and 12-year-old, with a rental car for the drive between the two cities.</p>
+    <p class="lead rv" style="animation-delay:.14s">Barcelona, then Madrid for the Real Madrid opener.</p>
 
-    <div class="route rv" style="animation-delay:.18s">
-      <span class="stop">Montréal</span><span class="arrow">&rarr;</span>
-      <span class="stop city">Barcelona</span><span class="arrow">&rarr;</span>
-      <span class="stop city">Zaragoza</span><span class="arrow">&rarr;</span>
-      <span class="stop city">Madrid</span><span class="arrow">&rarr;</span>
-      <span class="stop">Montréal</span>
-    </div>
-
-    <div class="countdown rv" style="animation-delay:.2s">
+    <div class="countdown rv" style="animation-delay:.18s">
       <div class="cd-n" id="cdNum">&mdash;</div>
       <div class="cd-l" id="cdLabel">days to go</div>
       <div class="cd-sub">Departure Aug 11, 2026 &middot; Montréal &rarr; Barcelona &middot; 7 nights</div>
     </div>
 
-    <div class="tl-wrap rv" style="animation-delay:.24s"><div id="timeline"></div></div>
+    <div class="tl-wrap rv" style="animation-delay:.22s"><div id="timeline"></div></div>
 
-    <div class="match rv" style="animation-delay:.26s">
+    <div class="hstats rv" id="home-stats" style="animation-delay:.26s"></div>
+    <div class="rv" id="home-next" style="animation-delay:.3s"></div>
+
+    <div class="match rv" style="animation-delay:.34s">
       <div class="mk">La Liga &middot; Matchday 1 &middot; Season opener</div>
       <h3>Real Madrid vs Real Sociedad</h3>
-      <p>The opener at the Santiago Bernabéu, the weekend of <strong>August 15&ndash;16</strong>. La Liga confirms the exact day (Sat 15 or Sun 16) and kickoff about 2&ndash;3 weeks out. You're in Madrid for it, and you'll do the stadium tour on another day too.</p>
-      <p><strong>Plan:</strong> create your realmadrid.com account now, watch for the kickoff confirmation around August 1, then buy the moment general sale opens. Two seats, you and your son, budget €60&ndash;100 each.</p>
+      <p>At the Bernabéu, the weekend of <strong>August 15&ndash;16</strong> (exact day confirmed ~2 weeks out). Two seats, you and your son.</p>
       <a class="go" href="https://www.realmadrid.com/en-US/tickets" target="_blank" rel="noopener">Open Real Madrid tickets &rarr;</a>
     </div>
-
-    <div class="card rv" style="animation-delay:.3s">
-      <h3>The shape of the trip</h3>
-      <p><strong>Barcelona</strong> first (3 nights) for Gaudí and the beach while you shake off the jet lag; pick up the rental car at the airport but leave it parked, the city is walkable. Then a scenic <strong>drive to Madrid on the 15th</strong> (lunch in Zaragoza, the midpoint). Four nights in the capital built around the <strong>Real Madrid opener</strong>, the Bernabéu tour, and a day trip to Segovia. Home from Madrid on the 19th.</p>
-    </div>
-
-    <div class="card rv" style="animation-delay:.34s"><p>Tap the menu (top-left) for each day’s ideas and hidden gems, maps &amp; websites, what to pack, what to book, and a live budget &amp; expense tracker. Everything you and your wife check off syncs across both phones.</p></div>
   </section>
 
   <!-- ITINERARY -->
@@ -610,11 +617,11 @@ main .card + .card{margin-top:1rem;}
       <button id="exp-add">Add expense</button>
     </div>
     <div class="exp-tot rv">
-      <div class="et"><div class="k">Total (CAD)</div><div class="v" id="exp-total">$0</div></div>
       <div class="et"><div class="k">Credit</div><div class="v" id="exp-credit">$0</div></div>
-      <div class="et"><div class="k">Debit</div><div class="v" id="exp-debit">$0</div></div>
       <div class="et"><div class="k">Cash</div><div class="v" id="exp-cash">$0</div></div>
+      <div class="et"><div class="k">Debit</div><div class="v" id="exp-debit">$0</div></div>
     </div>
+    <div class="exp-grand rv"><div class="k">Total spent (CAD)</div><div class="v" id="exp-total">$0</div></div>
     <div class="exp-cap rv">Total spend vs budget</div>
     <div id="exp-chart" class="rv"></div>
     <div class="exp-cap rv">Daily spend vs daily target</div>
@@ -629,7 +636,7 @@ main .card + .card{margin-top:1rem;}
   <button class="tab" data-view="apercu" aria-label="Home"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span class="tl">Home</span></button>
   <button class="tab" data-view="byday" aria-label="Each day"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="tl">Days</span></button>
   <button class="tab" data-view="around" aria-label="Getting around"><svg viewBox="0 0 24 24"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span class="tl">Go</span></button>
-  <button class="tab" data-view="expenses" aria-label="Expenses"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg><span class="tl">Spend</span></button>
+  <button class="tab" id="tabCtx" data-view="expenses" aria-label="Expenses"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14h2"/></svg><span class="tl">Spend</span></button>
   <button class="tab" id="tabMore" aria-label="More"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="tl">More</span></button>
 </nav>
 
@@ -707,7 +714,7 @@ main .card + .card{margin-top:1rem;}
     g[1].forEach(function(x){var b=document.createElement('button');b.className='navitem';b.setAttribute('data-view',x[0]);b.innerHTML='<svg class="ni-ic" viewBox="0 0 24 24">'+(ICONS[x[0]]||'')+'</svg><span></span>';b.querySelector('span').textContent=x[1];b.addEventListener('click',function(){show(x[0]);});navBox.appendChild(b);});
   });
   function closeDrawer(){document.body.classList.remove('drawer-open');}
-  var PRIMARY=['apercu','byday','around','expenses'];
+  var PRIMARY=['apercu','byday','around','expenses','alist'];
   function show(name){
     navBox.querySelectorAll('.navitem').forEach(function(b){var m=b.getAttribute('data-view')===name;b.classList.toggle('active',m);b.setAttribute('aria-current',m?'page':'false');});
     document.querySelectorAll('#tabbar .tab[data-view]').forEach(function(b){var m=b.getAttribute('data-view')===name;b.classList.toggle('active',m);b.setAttribute('aria-current',m?'page':'false');});
@@ -723,12 +730,15 @@ main .card + .card{margin-top:1rem;}
   document.querySelectorAll('#tabbar .tab[data-view]').forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-view'));});});
   document.getElementById('tabMore').addEventListener('click',function(){document.body.classList.toggle('drawer-open');});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
-  var tsx=0,tsy=0,edge=false;
-  document.addEventListener('touchstart',function(e){var t=e.touches[0];tsx=t.clientX;tsy=t.clientY;edge=tsx<=26;},{passive:true});
-  document.addEventListener('touchmove',function(e){var t=e.touches[0],dx=t.clientX-tsx,dy=t.clientY-tsy;if(Math.abs(dy)>45)return;
-    if(!document.body.classList.contains('drawer-open')){if(edge&&dx>45){document.body.classList.add('drawer-open');edge=false;}}
-    else if(dx<-45){closeDrawer();}
+  var drawerEl=document.getElementById('drawer'),scrimEl=document.getElementById('scrim');
+  var dgx=0,dgy=0,dgw=300,dgOn=false,dgActive=false,dgPx=0,dgElig=false;
+  document.addEventListener('touchstart',function(e){var t=e.touches[0];dgx=t.clientX;dgy=t.clientY;dgOn=document.body.classList.contains('drawer-open');dgActive=false;dgElig=dgOn||dgx<=28;},{passive:true});
+  document.addEventListener('touchmove',function(e){if(!dgElig)return;var t=e.touches[0],dx=t.clientX-dgx,dy=t.clientY-dgy;
+    if(!dgActive){if(Math.abs(dy)>Math.abs(dx)){dgElig=false;return;}if(Math.abs(dx)<8)return;dgw=drawerEl.offsetWidth||300;dgActive=true;drawerEl.style.transition='none';scrimEl.style.transition='none';scrimEl.style.pointerEvents='auto';}
+    dgPx=Math.max(-dgw,Math.min(0,(dgOn?0:-dgw)+dx));
+    drawerEl.style.transform='translateX('+dgPx+'px)';scrimEl.style.opacity=(1+dgPx/dgw).toFixed(3);
   },{passive:true});
+  document.addEventListener('touchend',function(){if(!dgActive)return;dgActive=false;drawerEl.style.transition='';scrimEl.style.transition='';drawerEl.style.transform='';scrimEl.style.opacity='';scrimEl.style.pointerEvents='';document.body.classList.toggle('drawer-open',dgPx>-dgw*0.5);},{passive:true});
   show(get('spain_tab','apercu'));
 
   /* toast */
@@ -925,7 +935,7 @@ main .card + .card{margin-top:1rem;}
     progCheck();
   }
   function progCheck(){var st=get('spain_check',{}),list=buildCheckList(),d=list.reduce(function(a,it){return a+(st[it.key]?1:0);},0),p=list.length?Math.round(d/list.length*100):0;
-    document.getElementById('checkFill').style.width=p+'%';document.getElementById('checkLabel').textContent=d+' of '+list.length+' done · '+p+'%';}
+    document.getElementById('checkFill').style.width=p+'%';document.getElementById('checkLabel').textContent=d+' of '+list.length+' done · '+p+'%';renderHome();}
   document.getElementById('resetCheck').addEventListener('click',function(){if(!confirm('Clear all booking checkmarks for both phones?'))return;set('spain_check',{});renderCheck();toast('List reset');});
 
   function renderActivities(){
@@ -1022,7 +1032,7 @@ main .card + .card{margin-top:1rem;}
     progPack();
   }
   function progPack(){var k=pKeys(),st=get('spain_pack',{}),d=k.reduce(function(a,x){return a+(st[x]?1:0);},0),p=Math.round(d/k.length*100);
-    document.getElementById('packFill').style.width=p+'%';document.getElementById('packLabel').textContent=d+' of '+k.length+' done · '+p+'%';}
+    document.getElementById('packFill').style.width=p+'%';document.getElementById('packLabel').textContent=d+' of '+k.length+' done · '+p+'%';renderHome();}
   document.getElementById('resetPack').addEventListener('click',function(){if(!confirm('Clear all packing checkmarks for both phones?'))return;set('spain_pack',{});renderPack();toast('List reset');});
 
   /* expenses */
@@ -1130,6 +1140,40 @@ main .card + .card{margin-top:1rem;}
     toast('Exported CSV');
   });
 
+  function renderHome(){
+    var st=get('spain_check',{}),list=buildCheckList();
+    var bookTot=list.length,bookDone=list.reduce(function(a,it){return a+(st[it.key]?1:0);},0);
+    var pk=get('spain_pack',{}),pkeys=pKeys(),packTot=pkeys.length,packDone=pkeys.reduce(function(a,k){return a+(pk[k]?1:0);},0);
+    var box=document.getElementById('home-stats');
+    if(box){
+      box.innerHTML='';
+      [['To book',bookDone,bookTot,'alist'],['Packing',packDone,packTot,'bagages']].forEach(function(c){
+        var pct=c[2]?Math.round(c[1]/c[2]*100):0;
+        var el=document.createElement('div');el.className='hstat';
+        el.innerHTML='<div class="hk">'+c[0]+'</div><div class="hv">'+c[1]+'<small>/'+c[2]+'</small></div><div class="hbar"><span style="width:'+pct+'%"></span></div>';
+        el.addEventListener('click',function(){show(c[3]);});
+        box.appendChild(el);
+      });
+    }
+    var nb=document.getElementById('home-next');
+    if(nb){
+      var next=list.filter(function(it){return !st[it.key]&&(it.w==='urgent'||it.w==='soon');}).slice(0,3);
+      var h='<div class="hnext"><div class="hn-h">Next up</div>';
+      if(!next.length){h+='<div class="hn-done">Nothing urgent left. Nicely done.</div>';}
+      else{next.forEach(function(){h+='<div class="hn-i"><span class="hn-w"></span><span class="hn-t"></span><span class="hn-arr">&rsaquo;</span></div>';});}
+      h+='</div>';nb.innerHTML=h;
+      var rows=nb.querySelectorAll('.hn-i');
+      next.forEach(function(it,i){rows[i].querySelector('.hn-w').textContent=wLabel[it.w];rows[i].querySelector('.hn-t').textContent=it.t;rows[i].addEventListener('click',function(){show('alist');});});
+    }
+  }
+  function setPhaseTab(days){
+    var b=document.getElementById('tabCtx');if(!b)return;
+    var view=(days>0)?'alist':'expenses',label=(days>0)?'Book':'Spend';
+    b.setAttribute('data-view',view);b.setAttribute('aria-label',label);
+    var tl=b.querySelector('.tl');if(tl)tl.textContent=label;
+    var sv=b.querySelector('svg');if(sv)sv.innerHTML=ICONS[view];
+    var av=document.querySelector('.view.active');b.classList.toggle('active',!!av&&av.id===view);
+  }
   function updateCountdown(){
     var num=document.getElementById('cdNum'),lab=document.getElementById('cdLabel');if(!num)return;
     var dep=new Date(2026,7,11),end=new Date(2026,7,20),now=new Date(),d0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
@@ -1141,9 +1185,10 @@ main .card + .card{margin-top:1rem;}
     }
     else if(d0<end){num.textContent=(Math.round((d0-dep)/86400000)+1);lab.textContent='day in Spain';}
     else{num.textContent='¡Olé!';lab.textContent='trip complete';}
+    setPhaseTab(days);
   }
-  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 15';
+  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 16';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
