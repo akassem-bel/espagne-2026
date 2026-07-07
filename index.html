@@ -191,6 +191,10 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 .fact{background:var(--panel);padding:1rem 1.05rem;}
 .fact .k{text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--dim);}
 .fact .v{font-family:var(--font-head);font-size:1.5rem;margin-top:.2rem;font-variant-numeric:tabular-nums;}
+.countdown{border:1px solid var(--line-soft);border-radius:12px;background:linear-gradient(160deg,rgba(240,59,66,0.12),var(--panel));padding:1.5rem;text-align:center;margin:1.5rem 0;}
+.countdown .cd-n{font-family:var(--font-head);font-size:3.8rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;}
+.countdown .cd-l{text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--muted);margin-top:.4rem;font-weight:600;}
+.countdown .cd-sub{color:var(--dim);font-size:.82rem;margin-top:.75rem;}
 
 /* timeline */
 .tl-wrap{margin:1.8rem 0 .6rem;overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -400,12 +404,10 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
       <span class="stop">Montréal</span>
     </div>
 
-    <div class="facts rv" style="animation-delay:.22s">
-      <div class="fact"><div class="k">Dates</div><div class="v">Aug 11&ndash;19</div></div>
-      <div class="fact"><div class="k">Nights</div><div class="v">7</div></div>
-      <div class="fact"><div class="k">Flights</div><div class="v">Air Canada</div></div>
-      <div class="fact"><div class="k">The match</div><div class="v">Aug 15/16</div></div>
-      <div class="fact"><div class="k">Car</div><div class="v">BCN &rarr; MAD</div></div>
+    <div class="countdown rv" style="animation-delay:.2s">
+      <div class="cd-n" id="cdNum">&mdash;</div>
+      <div class="cd-l" id="cdLabel">days to go</div>
+      <div class="cd-sub">Departure Aug 11, 2026 &middot; Montréal &rarr; Barcelona &middot; 7 nights</div>
     </div>
 
     <div class="tl-wrap rv" style="animation-delay:.24s"><div id="timeline"></div></div>
@@ -579,16 +581,17 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     <p class="lead rv">Log what you actually spend as you go. Totals sync live between phones, so you both see the running tally.</p>
     <div class="exp-form rv">
       <input id="exp-amt" inputmode="decimal" placeholder="Amount" aria-label="Amount">
-      <select id="exp-cur" aria-label="Currency"><option value="EUR">€ EUR</option><option value="CAD">$ CAD</option></select>
+      <select id="exp-cur" aria-label="Currency"><option value="EUR">€ EUR</option><option value="CAD">$ CAD</option><option value="USD">$ USD</option></select>
       <select id="exp-cat" aria-label="Category"><option>Food</option><option>Lodging</option><option>Transport</option><option>Tickets</option><option>Activities</option><option>Shopping</option><option>Other</option></select>
       <select id="exp-pay" aria-label="Payment method"><option>Credit</option><option>Debit</option><option>Cash</option></select>
       <input id="exp-note" class="full" placeholder="What was it? (e.g. lunch at La Boqueria)" aria-label="Note">
       <button id="exp-add">Add expense</button>
     </div>
     <div class="exp-tot rv">
-      <div class="et"><div class="k">Total €</div><div class="v" id="exp-eur">€0</div></div>
-      <div class="et"><div class="k">Total $ CAD</div><div class="v" id="exp-cad">$0</div></div>
-      <div class="et"><div class="k">Entries</div><div class="v" id="exp-count">0</div></div>
+      <div class="et"><div class="k">Total (CAD)</div><div class="v" id="exp-total">$0</div></div>
+      <div class="et"><div class="k">Credit</div><div class="v" id="exp-credit">$0</div></div>
+      <div class="et"><div class="k">Debit</div><div class="v" id="exp-debit">$0</div></div>
+      <div class="et"><div class="k">Cash</div><div class="v" id="exp-cash">$0</div></div>
     </div>
     <div class="exp-cap rv">Total spend vs budget</div>
     <div id="exp-chart" class="rv"></div>
@@ -997,13 +1000,14 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   document.getElementById('resetPack').addEventListener('click',function(){set('spain_pack',{});renderPack();toast('List reset');});
 
   /* expenses */
-  var EUR_CAD=1.48;
+  var EUR_CAD=1.48,USD_CAD=1.36;
+  function toCad(x){var r=x.c==='CAD'?1:(x.c==='USD'?USD_CAD:EUR_CAD);return (+x.a||0)*r;}
   function renderExpChart(){
     var host=document.getElementById('exp-chart');if(!host)return;
     var list=get('spain_expenses',[]);
     var budget=BUDGET.reduce(function(a,b){return a+(b.lo+b.hi)/2;},0);
     var cum=0,pts=[0];
-    list.forEach(function(x){cum+=(+x.a||0)*(x.c==='CAD'?1:EUR_CAD);pts.push(cum);});
+    list.forEach(function(x){cum+=toCad(x);pts.push(cum);});
     var W=320,H=126,x0=8,x1=304,y0=100,y1=20,n=Math.max(pts.length-1,1);
     var maxY=Math.max(budget,cum)*1.18||100;
     function X(i){return x0+(i/n)*(x1-x0);}
@@ -1030,7 +1034,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     function mid(id){var b=BUDGET.filter(function(x){return x.id===id;})[0];return b?(b.lo+b.hi)/2:0;}
     var target=(mid('food')+mid('attractions')+mid('buffer'))/8;
     var map={},keys=[];
-    list.forEach(function(x){var d=new Date(x.id);var k=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);if(!(k in map)){map[k]=0;keys.push(k);}map[k]+=(+x.a||0)*(x.c==='CAD'?1:EUR_CAD);});
+    list.forEach(function(x){var d=new Date(x.id);var k=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);if(!(k in map)){map[k]=0;keys.push(k);}map[k]+=toCad(x);});
     keys.sort();
     var vals=keys.map(function(k){return map[k];});
     var maxY=Math.max(target,vals.length?Math.max.apply(null,vals):0)*1.22||100;
@@ -1054,17 +1058,19 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   }
   function renderExpenses(){
     var box=document.getElementById('exp-list');if(!box)return;
-    var list=get('spain_expenses',[]),eur=0,cad=0;
-    list.forEach(function(x){if(x.c==='CAD')cad+=(+x.a||0);else eur+=(+x.a||0);});
-    document.getElementById('exp-eur').textContent='€'+Math.round(eur).toLocaleString('en-CA');
-    document.getElementById('exp-cad').textContent='$'+Math.round(cad).toLocaleString('en-CA');
-    document.getElementById('exp-count').textContent=list.length;
+    var list=get('spain_expenses',[]),tot=0,bym={Credit:0,Debit:0,Cash:0};
+    list.forEach(function(x){var v=toCad(x);tot+=v;if(bym[x.pay]!=null)bym[x.pay]+=v;});
+    function cad(v){return '$'+Math.round(v).toLocaleString('en-CA');}
+    document.getElementById('exp-total').textContent=cad(tot);
+    document.getElementById('exp-credit').textContent=cad(bym.Credit);
+    document.getElementById('exp-debit').textContent=cad(bym.Debit);
+    document.getElementById('exp-cash').textContent=cad(bym.Cash);
     renderExpChart();renderExpDaily();
     box.innerHTML='';
     if(!list.length){box.innerHTML='<div class="exp-empty">No expenses yet. Add your first one above; it syncs to both phones.</div>';return;}
     list.slice().reverse().forEach(function(x){
       var row=document.createElement('div');row.className='exp-item';
-      var sym=x.c==='CAD'?'$':'€';
+      var sym=x.c==='EUR'?'€':(x.c==='USD'?'US$':'$');
       row.innerHTML='<span class="ei-cat"></span><span class="ei-n"><span class="ei-nt"></span><small class="ei-pm"></small></span><span class="ei-a"></span><button class="ei-x" aria-label="Delete">&times;</button>';
       row.querySelector('.ei-cat').textContent=x.cat||'Other';
       row.querySelector('.ei-nt').textContent=x.note||'(no note)';
@@ -1093,8 +1099,16 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     toast('Exported CSV');
   });
 
-  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 13';
+  function updateCountdown(){
+    var num=document.getElementById('cdNum'),lab=document.getElementById('cdLabel');if(!num)return;
+    var dep=new Date(2026,7,11),end=new Date(2026,7,20),now=new Date(),d0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    var days=Math.round((dep-d0)/86400000);
+    if(days>0){num.textContent=days;lab.textContent=(days===1?'day to go':'days to go');}
+    else if(d0<end){num.textContent=(Math.round((d0-dep)/86400000)+1);lab.textContent='day in Spain';}
+    else{num.textContent='¡Olé!';lab.textContent='trip complete';}
+  }
+  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 14';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
@@ -1110,7 +1124,8 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
         applyingRemote=true;
         Object.keys(SYNC).forEach(function(k){if(d[SYNC[k]]!=null)LS.setItem(k,JSON.stringify(d[SYNC[k]]));});
         applyingRemote=false;
-        renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();
+        var ae=document.activeElement,typing=!!(ae&&((ae.classList&&ae.classList.contains('actual'))||ae.id==='exp-amt'||ae.id==='exp-note'));
+        if(!typing){renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();}
         if(first){var s=document.getElementById('synced');if(s)s.textContent=' · live sync';toast('Live sync on');first=false;}
       });
     }catch(e){}
