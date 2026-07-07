@@ -108,18 +108,20 @@ body.drawer-open #scrim{opacity:1;pointer-events:auto;}
 #drawer{position:fixed;top:0;left:0;bottom:0;width:82%;max-width:320px;background:var(--elev);border-right:1px solid var(--line);z-index:120;transform:translateX(-102%);transition:transform .28s var(--ease);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);box-shadow:2px 0 30px rgba(0,0,0,.3);}
 body.drawer-open #drawer{transform:none;}
 @media (prefers-reduced-motion:reduce){#drawer,#scrim{transition:none;}}
-.draw-head{padding:1.3rem 1.3rem 1rem;border-bottom:1px solid var(--line-soft);}
-.draw-head .dh-b{font-family:var(--font-head);font-size:1.7rem;line-height:1;}
-.draw-head .dh-m{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:.4rem;}
+.draw-head{padding:1rem 1.3rem .8rem;border-bottom:1px solid var(--line-soft);}
+.draw-head .dh-b{font-family:var(--font-head);font-size:1.45rem;line-height:1;}
+.draw-head .dh-m{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:.35rem;}
 .draw-head .dh-m #synced{color:var(--accent);}
 #nav{flex:1;overflow-y:auto;padding:.6rem 0;}
-.navitem{display:flex;align-items:center;gap:.85rem;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;color:var(--muted);font-family:var(--font-body);font-size:1.04rem;font-weight:500;padding:.9rem 1.3rem;cursor:pointer;transition:color .15s,border-color .15s,background .15s;}
+.navitem{display:flex;align-items:center;gap:.85rem;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;color:var(--muted);font-family:var(--font-body);font-size:1rem;font-weight:500;padding:.62rem 1.3rem;cursor:pointer;transition:color .15s,border-color .15s,background .15s;}
 .navitem .ni-ic{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .navitem.active .ni-ic{stroke:var(--accent);}
 .navitem:hover{color:var(--ink);background:var(--panel);}
 .navitem.active{color:var(--ink);border-left-color:var(--accent);background:var(--panel);}
-.nav-h{font-size:.62rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);padding:1rem 1.3rem .3rem;font-weight:700;}
-.nav-h:first-child{padding-top:.4rem;}
+.nav-h{font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);padding:.65rem 1.3rem .2rem;font-weight:700;}
+.nav-h:first-child{padding-top:.3rem;}
+#nav{padding:.3rem 0;}
+.draw-foot{padding:.7rem 1.3rem calc(.7rem + env(safe-area-inset-bottom));}
 .draw-foot{border-top:1px solid var(--line-soft);padding:.9rem 1.3rem calc(.9rem + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.7rem;}
 .draw-foot .df-t{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
 .draw-foot .df-v{margin-left:auto;font-size:.66rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;}
@@ -175,6 +177,9 @@ main .card,main .match,main .leg,main .compare,main .lgroup,main .facts,main .tl
 #tabbar .tab:active{opacity:.6;}
 .view{display:none;}
 .view.active{display:block;}
+@keyframes slideBack{from{opacity:.4;transform:translateX(-42px);}to{opacity:1;transform:none;}}
+.view.slide-back{animation:slideBack .28s var(--ease);}
+@media (prefers-reduced-motion:reduce){.view.slide-back{animation:none;}}
 .rv{opacity:0;transform:translateY(10px);animation:rise .6s var(--ease) forwards;}
 @keyframes rise{to{opacity:1;transform:none;}}
 @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
@@ -214,9 +219,11 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 .hn-t{flex:1;min-width:0;}
 .hn-arr{margin-left:auto;color:var(--dim);font-size:1.15rem;}
 .hn-done{padding:.95rem 1rem;color:var(--muted);font-size:.9rem;}
-.exp-grand{text-align:center;border:1px solid var(--line-soft);border-radius:10px;background:linear-gradient(160deg,var(--wash),var(--panel));padding:1.1rem;margin:0 0 1.3rem;}
-.exp-grand .k{text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;color:var(--muted);}
-.exp-grand .v{font-family:var(--font-head);font-size:2.6rem;line-height:1;color:var(--accent);margin-top:.25rem;font-variant-numeric:tabular-nums;}
+.exp-grand{text-align:center;border:1px solid var(--line-soft);border-radius:10px;background:linear-gradient(160deg,var(--wash),var(--panel));padding:.85rem;margin:0 0 .6rem;}
+.exp-grand .k{text-transform:uppercase;letter-spacing:.12em;font-size:.62rem;color:var(--muted);}
+.exp-grand .v{font-family:var(--font-head);font-size:2.2rem;line-height:1;color:var(--accent);margin-top:.15rem;font-variant-numeric:tabular-nums;}
+.exp-tot{margin-bottom:1rem;}
+.exp-form{margin-bottom:1.2rem;}
 
 /* timeline */
 .tl-wrap{margin:1.8rem 0 .6rem;overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -607,7 +614,13 @@ main .card + .card{margin-top:1rem;}
   <section class="view" id="expenses">
     <h2 class="title rv">Expenses</h2>
     <div class="rule rv"></div>
-    <p class="lead rv">Log what you actually spend as you go. Totals sync live between phones, so you both see the running tally.</p>
+    <p class="lead rv" style="margin-bottom:1rem">Log spend as you go; totals sync live to both phones.</p>
+    <div class="exp-grand rv"><div class="k">Total spent (CAD)</div><div class="v" id="exp-total">$0</div></div>
+    <div class="exp-tot rv">
+      <div class="et"><div class="k">Credit</div><div class="v" id="exp-credit">$0</div></div>
+      <div class="et"><div class="k">Cash</div><div class="v" id="exp-cash">$0</div></div>
+      <div class="et"><div class="k">Debit</div><div class="v" id="exp-debit">$0</div></div>
+    </div>
     <div class="exp-form rv">
       <input id="exp-amt" inputmode="decimal" placeholder="Amount" aria-label="Amount">
       <select id="exp-cur" aria-label="Currency"><option value="EUR">€ EUR</option><option value="CAD">$ CAD</option><option value="USD">$ USD</option></select>
@@ -616,12 +629,6 @@ main .card + .card{margin-top:1rem;}
       <input id="exp-note" class="full" placeholder="What was it? (e.g. lunch at La Boqueria)" aria-label="Note">
       <button id="exp-add">Add expense</button>
     </div>
-    <div class="exp-tot rv">
-      <div class="et"><div class="k">Credit</div><div class="v" id="exp-credit">$0</div></div>
-      <div class="et"><div class="k">Cash</div><div class="v" id="exp-cash">$0</div></div>
-      <div class="et"><div class="k">Debit</div><div class="v" id="exp-debit">$0</div></div>
-    </div>
-    <div class="exp-grand rv"><div class="k">Total spent (CAD)</div><div class="v" id="exp-total">$0</div></div>
     <div class="exp-cap rv">Total spend vs budget</div>
     <div id="exp-chart" class="rv"></div>
     <div class="exp-cap rv">Daily spend vs daily target</div>
@@ -726,7 +733,9 @@ main .card + .card{margin-top:1rem;}
     var t=document.getElementById('secTitle');if(t)t.textContent=NAVMAP[name]||'';
     set('spain_tab',name);closeDrawer();
     var mn=document.querySelector('main');if(mn)mn.scrollTop=0;
-    document.querySelectorAll('#'+name+' .rv').forEach(function(el){el.style.animation='none';void el.offsetWidth;el.style.animation='';});
+    var sec=document.getElementById(name);
+    if(isBack&&sec){sec.classList.remove('slide-back');void sec.offsetWidth;sec.classList.add('slide-back');}
+    else{document.querySelectorAll('#'+name+' .rv').forEach(function(el){el.style.animation='none';void el.offsetWidth;el.style.animation='';});}
   }
   document.getElementById('menuBtn').addEventListener('click',function(){document.body.classList.toggle('drawer-open');});
   document.getElementById('scrim').addEventListener('click',closeDrawer);
@@ -1195,7 +1204,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 17';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 18';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
