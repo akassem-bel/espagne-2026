@@ -151,6 +151,8 @@ body.drawer-open #drawer{transform:none;}
 .exp-cap{font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);font-weight:700;margin:.2rem 0 .5rem;}
 .exp-bl{fill:var(--dim);font-family:var(--font-body);font-size:9px;}
 .exp-num{fill:var(--ink);font-family:var(--font-body);font-size:9.5px;font-weight:600;}
+.chart-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.chart-x::-webkit-scrollbar{height:0;}
 .exp-num.mut{fill:var(--muted);font-weight:500;}
 
 nav.tabs{background:var(--nav-bg);border-bottom:1px solid var(--line-soft);}
@@ -1026,11 +1028,11 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
     keys.sort();
     var vals=keys.map(function(k){return map[k];});
     var maxY=Math.max(target,vals.length?Math.max.apply(null,vals):0)*1.22||100;
-    var W=320,H=128,x0=8,x1=312,y0=102,y1=22,n=keys.length;
+    var H=128,n=keys.length,W=Math.max(360,n*52),x0=10,x1=W-10,y0=102,y1=22;
     function Y(v){return y0-(v/maxY)*(y0-y1);}
     var bw=n?Math.min(34,(x1-x0)/n*0.62):20;
     var money0=function(v){return '$'+Math.round(v).toLocaleString('en-CA');};
-    var s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img" aria-label="Daily spending versus daily target">';
+    var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:'+W+'px;height:128px;display:block" role="img" aria-label="Daily spending versus daily target">';
     var ty=Y(target);
     s+='<line x1="'+x0+'" y1="'+ty.toFixed(1)+'" x2="'+x1+'" y2="'+ty.toFixed(1)+'" style="stroke:var(--muted)" stroke-width="1.3" stroke-dasharray="5 4"/>';
     s+='<text class="exp-num mut" x="'+x1+'" y="'+(ty-4).toFixed(1)+'" text-anchor="end">Target '+money0(target)+'/day</text>';
@@ -1041,8 +1043,8 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
       s+='<text class="exp-bl" x="'+cx.toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle">'+k.slice(5).replace('-','/')+'</text>';
     });
     if(!n){s+='<text class="exp-bl" x="'+(W/2)+'" y="'+(y0-8)+'" text-anchor="middle">Log expenses to see daily bars</text>';}
-    s+='</svg><div class="exp-leg"><span><i class="bar"></i>Daily spend (CAD)</span><span><i class="dash"></i>Daily target</span></div>';
-    host.innerHTML=s;
+    s+='</svg>';
+    host.innerHTML='<div class="chart-x">'+s+'</div><div class="exp-leg"><span><i class="bar"></i>Daily spend (CAD)</span><span><i class="dash"></i>Daily target</span></div>';
   }
   function renderExpenses(){
     var box=document.getElementById('exp-list');if(!box)return;
@@ -1086,7 +1088,7 @@ footer{border-top:1px solid var(--line-soft);margin-top:1rem;}
   });
 
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 10';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 11';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
