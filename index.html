@@ -715,7 +715,10 @@ main .card + .card{margin-top:1rem;}
   });
   function closeDrawer(){document.body.classList.remove('drawer-open');}
   var PRIMARY=['apercu','byday','around','expenses','alist'];
-  function show(name){
+  var viewHist=[],curView=null;
+  function goBack(){if(viewHist.length){show(viewHist.pop(),true);return true;}return false;}
+  function show(name,isBack){
+    if(!isBack&&curView&&curView!==name){viewHist.push(curView);}curView=name;
     navBox.querySelectorAll('.navitem').forEach(function(b){var m=b.getAttribute('data-view')===name;b.classList.toggle('active',m);b.setAttribute('aria-current',m?'page':'false');});
     document.querySelectorAll('#tabbar .tab[data-view]').forEach(function(b){var m=b.getAttribute('data-view')===name;b.classList.toggle('active',m);b.setAttribute('aria-current',m?'page':'false');});
     var mt=document.getElementById('tabMore');if(mt)mt.classList.toggle('active',PRIMARY.indexOf(name)<0);
@@ -731,14 +734,18 @@ main .card + .card{margin-top:1rem;}
   document.getElementById('tabMore').addEventListener('click',function(){document.body.classList.toggle('drawer-open');});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer();});
   var drawerEl=document.getElementById('drawer'),scrimEl=document.getElementById('scrim');
-  var dgx=0,dgy=0,dgw=300,dgOn=false,dgActive=false,dgPx=0,dgElig=false;
-  document.addEventListener('touchstart',function(e){var t=e.touches[0];dgx=t.clientX;dgy=t.clientY;dgOn=document.body.classList.contains('drawer-open');dgActive=false;dgElig=dgOn||dgx<=28;},{passive:true});
-  document.addEventListener('touchmove',function(e){if(!dgElig)return;var t=e.touches[0],dx=t.clientX-dgx,dy=t.clientY-dgy;
-    if(!dgActive){if(Math.abs(dy)>Math.abs(dx)){dgElig=false;return;}if(Math.abs(dx)<8)return;dgw=drawerEl.offsetWidth||300;dgActive=true;drawerEl.style.transition='none';scrimEl.style.transition='none';scrimEl.style.pointerEvents='auto';}
-    dgPx=Math.max(-dgw,Math.min(0,(dgOn?0:-dgw)+dx));
-    drawerEl.style.transform='translateX('+dgPx+'px)';scrimEl.style.opacity=(1+dgPx/dgw).toFixed(3);
+  var dgx=0,dgy=0,dgw=300,dgActive=false,dgPx=0,dgMode='';
+  document.addEventListener('touchstart',function(e){var t=e.touches[0];dgx=t.clientX;dgy=t.clientY;dgActive=false;
+    dgMode=document.body.classList.contains('drawer-open')?'close':(dgx<=30?'back':'');},{passive:true});
+  document.addEventListener('touchmove',function(e){if(!dgMode)return;var t=e.touches[0],dx=t.clientX-dgx,dy=t.clientY-dgy;
+    if(!dgActive){if(Math.abs(dy)>Math.abs(dx)){dgMode='';return;}if(Math.abs(dx)<8)return;dgActive=true;if(dgMode==='close'){dgw=drawerEl.offsetWidth||300;drawerEl.style.transition='none';scrimEl.style.transition='none';scrimEl.style.pointerEvents='auto';}}
+    if(dgMode==='close'){dgPx=Math.max(-dgw,Math.min(0,dx));drawerEl.style.transform='translateX('+dgPx+'px)';scrimEl.style.opacity=(1+dgPx/dgw).toFixed(3);}
   },{passive:true});
-  document.addEventListener('touchend',function(){if(!dgActive)return;dgActive=false;drawerEl.style.transition='';scrimEl.style.transition='';drawerEl.style.transform='';scrimEl.style.opacity='';scrimEl.style.pointerEvents='';document.body.classList.toggle('drawer-open',dgPx>-dgw*0.5);},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(dgMode==='close'&&dgActive){dgActive=false;drawerEl.style.transition='';scrimEl.style.transition='';drawerEl.style.transform='';scrimEl.style.opacity='';scrimEl.style.pointerEvents='';document.body.classList.toggle('drawer-open',dgPx>-dgw*0.5);}
+    else if(dgMode==='back'&&dgActive){var ex=(e.changedTouches&&e.changedTouches[0])?e.changedTouches[0].clientX:dgx;if(ex-dgx>60)goBack();}
+    dgMode='';dgActive=false;
+  },{passive:true});
   show(get('spain_tab','apercu'));
 
   /* toast */
@@ -1188,7 +1195,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 16';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 17';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
