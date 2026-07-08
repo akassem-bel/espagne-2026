@@ -263,7 +263,7 @@ h2.title{font-family:var(--font-head);font-weight:400;font-size:2.2rem;line-heig
 
 /* timeline */
 .tl-wrap{margin:.5rem 0 .2rem;overflow-x:hidden;}
-.tl-wrap svg.tl{width:100%;height:auto;display:block;max-width:300px;margin:0 auto;}
+.tl-wrap svg.tl{width:100%;height:auto;display:block;max-width:380px;margin:0 auto;}
 .tl-track{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:tldraw 1.3s var(--ease) forwards;}
 .tl-track.bcn{stroke:var(--muted);}
 .tl-track.mad{stroke:var(--ink);}
@@ -811,21 +811,21 @@ main .card + .card{margin-top:1rem;}
   function buildTimeline(){
     var host=document.getElementById('timeline');if(!host)return;
     var tlReduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var cols=3,W=320,px=44,topY=34,rowGap=64,R=28;
-    var xs=[px,W/2,W-px];
-    var rows=Math.ceil(TL.length/cols),H=topY+(rows-1)*rowGap+38;
-    function pos(i){var row=Math.floor(i/cols),col=i%cols;if(row%2===1)col=cols-1-col;return {x:xs[col],y:topY+row*rowGap,row:row};}
-    function pathFor(a,b){var d='';for(var i=a;i<=b;i++){var p=pos(i);if(i===a){d='M'+p.x+' '+p.y;continue;}var pr=pos(i-1);if(p.row===pr.row){d+=' L'+p.x+' '+p.y;}else{var right=pr.x>W/2,bx=right?(W-px+R):(px-R);d+=' C'+bx+' '+pr.y+' '+bx+' '+p.y+' '+p.x+' '+p.y;}}return d;}
+    var n=TL.length,per=Math.ceil(n/2),W=320,px=38,topY=30,rowGap=70;
+    function xcol(c){return px+c*(W-2*px)/(per-1);}
+    function pos(i){var row=i<per?0:1,col=(row===0)?i:((per-1)-(i-per));return {x:xcol(col),y:topY+row*rowGap,row:row};}
+    var H=topY+rowGap+32;
+    function pathFor(a,b){var d='';for(var i=a;i<=b;i++){var p=pos(i);if(i===a){d='M'+p.x.toFixed(1)+' '+p.y;continue;}var pr=pos(i-1);if(p.row===pr.row){d+=' L'+p.x.toFixed(1)+' '+p.y;}else{var r=((p.y-pr.y)/2).toFixed(1),sw=(pr.x>W/2)?1:0;d+=' A '+r+' '+r+' 0 0 '+sw+' '+p.x.toFixed(1)+' '+p.y;}}return d;}
     var s='<svg class="tl" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMin meet" role="img" aria-label="Trip timeline August 11 to 19">';
-    s+='<path class="tl-track bcn" pathLength="1" d="'+pathFor(0,4)+'"/>';
-    s+='<path class="tl-track mad" pathLength="1" style="animation-delay:.5s" d="'+pathFor(4,8)+'"/>';
-    TL.forEach(function(n,i){
-      var p=pos(i),m=n.star;
-      s+='<g class="tl-node'+(m?' match':'')+'" data-d="'+n.d+'" style="animation-delay:'+(0.25+i*0.05).toFixed(2)+'s">';
-      if(m&&!tlReduce){s+='<circle class="tl-halo" cx="'+p.x+'" cy="'+p.y+'" r="9"><animate attributeName="r" values="9;16;9" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.55;0;0.55" dur="2.2s" repeatCount="indefinite"/></circle>';}
-      s+='<circle class="tl-dot'+(m?' match':'')+'" cx="'+p.x+'" cy="'+p.y+'" r="'+(m?7:5)+'"/>';
-      s+='<text class="tl-day" x="'+p.x+'" y="'+(p.y-12)+'" text-anchor="middle">'+n.d+'</text>';
-      s+='<text class="tl-ev" x="'+p.x+'" y="'+(p.y+21)+'" text-anchor="middle">'+n.t+'</text>';
+    s+='<path class="tl-track bcn" pathLength="1" d="'+pathFor(0,per-1)+'"/>';
+    s+='<path class="tl-track mad" pathLength="1" style="animation-delay:.45s" d="'+pathFor(per-1,n-1)+'"/>';
+    TL.forEach(function(nn,i){
+      var p=pos(i),m=nn.star,X=p.x.toFixed(1);
+      s+='<g class="tl-node'+(m?' match':'')+'" data-d="'+nn.d+'" style="animation-delay:'+(0.2+i*0.05).toFixed(2)+'s">';
+      if(m&&!tlReduce){s+='<circle class="tl-halo" cx="'+X+'" cy="'+p.y+'" r="9"><animate attributeName="r" values="9;16;9" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.55;0;0.55" dur="2.2s" repeatCount="indefinite"/></circle>';}
+      s+='<circle class="tl-dot'+(m?' match':'')+'" cx="'+X+'" cy="'+p.y+'" r="'+(m?7:5)+'"/>';
+      s+='<text class="tl-day" x="'+X+'" y="'+(p.y-13)+'" text-anchor="middle">'+nn.d+'</text>';
+      s+='<text class="tl-ev" x="'+X+'" y="'+(p.y+20)+'" text-anchor="middle">'+nn.t+'</text>';
       s+='</g>';
     });
     s+='</svg>';
@@ -1249,7 +1249,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();renderFlights();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 27';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 28';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
