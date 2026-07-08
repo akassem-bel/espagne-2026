@@ -69,7 +69,7 @@ body{
   font-family:var(--font-body);font-weight:400;line-height:1.6;
   -webkit-font-smoothing:antialiased;
   -webkit-tap-highlight-color:transparent;
-  position:fixed;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;overflow:hidden;
+  position:fixed;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;overflow:hidden;touch-action:manipulation;
 }
 #dotsbg{position:fixed;inset:0;z-index:-1;opacity:var(--bg-op);pointer-events:none;transition:opacity .4s;}
 a{color:var(--ink);text-decoration:none;}
@@ -198,6 +198,23 @@ main .card,main .match,main .leg,main .compare,main .lgroup,main .facts,main .tl
 .fl-open{color:var(--accent);text-decoration:none;font-weight:600;font-size:.82rem;padding:.34rem .6rem;border:1px solid var(--line-soft);border-radius:7px;white-space:nowrap;}
 .fl-deal .fl-price{color:#3ddc84;}
 .fl-near .fl-price{color:#f0a03b;}
+.dash-cd{display:flex;align-items:baseline;gap:.6rem;margin:.4rem 0 1.1rem;}
+.dash-num{font-family:var(--font-head);font-size:4rem;line-height:.85;color:var(--accent);font-variant-numeric:tabular-nums;}
+.dash-lab{font-size:1rem;color:var(--muted);}
+.dash-chips{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1.1rem;}
+.dchip{display:flex;flex-direction:column;align-items:flex-start;gap:.2rem;background:var(--panel);border:1px solid var(--line-soft);border-radius:12px;padding:.7rem .9rem;cursor:pointer;text-align:left;font-family:inherit;}
+.dchip .dc-k{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:var(--dim);}
+.dchip .dc-v{font-family:var(--font-head);font-size:1.55rem;line-height:1;color:var(--ink);}
+.fl-card{margin-top:0;}
+.fl-tgtlab{font-family:var(--font-body);font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.3rem;text-transform:none;letter-spacing:0;}
+.fl-row2{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.6rem 0;border-top:1px solid var(--line-soft);text-decoration:none;color:var(--ink);}
+.fl-row2:first-of-type{border-top:none;}
+.fl-r-main{display:flex;flex-direction:column;gap:.1rem;min-width:0;}
+.fl-row2 .fl-lbl{font-weight:600;}
+.fl-row2 .fl-sub{color:var(--muted);font-size:.78rem;}
+.fl-row2 .fl-price{font-family:var(--font-head);font-size:1.35rem;white-space:nowrap;display:flex;align-items:center;gap:.15rem;}
+.fl-arr{color:var(--dim);}
+.mast .sect{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rv{opacity:0;transform:translateY(10px);animation:rise .6s var(--ease) forwards;}
 @keyframes rise{to{opacity:1;transform:none;}}
 @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
@@ -451,7 +468,7 @@ main .card + .card{margin-top:1rem;}
 <div id="scrim"></div>
 <div id="backover"><div class="bo-inner"></div></div>
 <aside id="drawer" aria-label="Navigation">
-  <div class="draw-head"><div class="dh-b">Spain 2026</div><div class="dh-m">Family trip &middot; Aug 11&ndash;19<span id="synced"></span></div></div>
+  <div class="draw-head"><div class="dh-b">Spain Vacation Planner</div><div class="dh-m">Aug 11&ndash;19, 2026<span id="synced"></span></div></div>
   <nav id="nav"></nav>
   <div class="draw-foot"><button class="iconbtn ico" id="themeBtn" aria-label="Toggle light / dark"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><span class="df-t">Theme</span><span class="df-v" id="buildTag"></span></div>
 </aside>
@@ -459,29 +476,13 @@ main .card + .card{margin-top:1rem;}
 <main>
   <!-- OVERVIEW -->
   <section class="view active" id="apercu">
-    <div class="kick rv">Family trip &middot; 8 days</div>
-    <h1 class="title rv" style="animation-delay:.05s">Eight days in <em>Spain</em>, August 11&ndash;19, 2026</h1>
-    <div class="rule rv" style="animation-delay:.1s"></div>
-    <p class="lead rv" style="animation-delay:.14s">Barcelona, then Madrid for the Real Madrid opener.</p>
-
-    <div class="countdown rv" style="animation-delay:.18s">
-      <div class="cd-n" id="cdNum">&mdash;</div>
-      <div class="cd-l" id="cdLabel">days to go</div>
-      <div class="cd-sub">Departure Aug 11, 2026 &middot; Montréal &rarr; Barcelona &middot; 7 nights</div>
+    <div class="dash-cd rv"><span class="dash-num" id="cdNum">&mdash;</span><span class="dash-lab" id="cdLabel">days to go</span></div>
+    <div class="dash-chips rv" style="animation-delay:.05s">
+      <button class="dchip" id="chipBook"><span class="dc-k">To book</span><span class="dc-v">0/0</span></button>
+      <button class="dchip" id="chipPack"><span class="dc-k">Packing</span><span class="dc-v">0/0</span></button>
     </div>
-
-    <div class="tl-wrap rv" style="animation-delay:.22s"><div id="timeline"></div></div>
-
-    <div class="hstats rv" id="home-stats" style="animation-delay:.26s"></div>
-    <div class="rv" id="home-next" style="animation-delay:.3s"></div>
-    <div class="rv" id="home-flights" style="animation-delay:.32s"></div>
-
-    <div class="match rv" style="animation-delay:.34s">
-      <div class="mk">La Liga &middot; Matchday 1 &middot; Season opener</div>
-      <h3>Real Madrid vs Real Sociedad</h3>
-      <p>At the Bernabéu, the weekend of <strong>August 15&ndash;16</strong> (exact day confirmed ~2 weeks out). Two seats, you and your son.</p>
-      <a class="go" href="https://www.realmadrid.com/en-US/tickets" target="_blank" rel="noopener">Open Real Madrid tickets &rarr;</a>
-    </div>
+    <div class="rv" id="home-flights" style="animation-delay:.1s"></div>
+    <div class="tl-wrap rv" id="home-tl" style="animation-delay:.16s"><div id="timeline"></div></div>
   </section>
 
   <!-- ITINERARY -->
@@ -750,7 +751,7 @@ main .card + .card{margin-top:1rem;}
     document.querySelectorAll('#tabbar .tab[data-view]').forEach(function(b){var m=b.getAttribute('data-view')===name;b.classList.toggle('active',m);b.setAttribute('aria-current',m?'page':'false');});
     var mt=document.getElementById('tabMore');if(mt)mt.classList.toggle('active',PRIMARY.indexOf(name)<0);
     views.forEach(function(v){v.classList.toggle('active',v.id===name);});
-    var t=document.getElementById('secTitle');if(t)t.textContent=NAVMAP[name]||'';
+    var t=document.getElementById('secTitle');if(t)t.textContent=(name==='apercu'?'Spain Vacation Planner':(NAVMAP[name]||''));
     set('spain_tab',name);closeDrawer();
     var mn=document.querySelector('main');if(mn)mn.scrollTop=0;
     var sec=document.getElementById(name);
@@ -1192,59 +1193,38 @@ main .card + .card{margin-top:1rem;}
     var st=get('spain_check',{}),list=buildCheckList();
     var bookTot=list.length,bookDone=list.reduce(function(a,it){return a+(st[it.key]?1:0);},0);
     var pk=get('spain_pack',{}),pkeys=pKeys(),packTot=pkeys.length,packDone=pkeys.reduce(function(a,k){return a+(pk[k]?1:0);},0);
-    var box=document.getElementById('home-stats');
-    if(box){
-      box.innerHTML='';
-      [['To book',bookDone,bookTot,'alist'],['Packing',packDone,packTot,'bagages']].forEach(function(c){
-        var pct=c[2]?Math.round(c[1]/c[2]*100):0;
-        var el=document.createElement('div');el.className='hstat';
-        el.innerHTML='<div class="hk">'+c[0]+'</div><div class="hv">'+c[1]+'<small>/'+c[2]+'</small></div><div class="hbar"><span style="width:'+pct+'%"></span></div>';
-        el.addEventListener('click',function(){show(c[3]);});
-        box.appendChild(el);
-      });
-    }
-    var nb=document.getElementById('home-next');
-    if(nb){
-      var next=list.filter(function(it){return !st[it.key]&&(it.w==='urgent'||it.w==='soon');}).slice(0,3);
-      var h='<div class="hnext"><div class="hn-h">Next up</div>';
-      if(!next.length){h+='<div class="hn-done">Nothing urgent left. Nicely done.</div>';}
-      else{next.forEach(function(){h+='<div class="hn-i"><span class="hn-w"></span><span class="hn-t"></span><span class="hn-arr">&rsaquo;</span></div>';});}
-      h+='</div>';nb.innerHTML=h;
-      var rows=nb.querySelectorAll('.hn-i');
-      next.forEach(function(it,i){rows[i].querySelector('.hn-w').textContent=wLabel[it.w];rows[i].querySelector('.hn-t').textContent=it.t;rows[i].addEventListener('click',function(){show('alist');});});
-    }
+    var cb=document.getElementById('chipBook'),cp=document.getElementById('chipPack');
+    if(cb){cb.querySelector('.dc-v').textContent=bookDone+'/'+bookTot;cb.onclick=function(){show('alist');};}
+    if(cp){cp.querySelector('.dc-v').textContent=packDone+'/'+packTot;cp.onclick=function(){show('bagages');};}
   }
   function flEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function flMoney(n){return '$'+Number(Math.round(n)).toLocaleString('en-CA');}
   function flAgo(iso){var t=Date.parse(iso);if(isNaN(t))return '';var m=Math.max(0,Math.round((Date.now()-t)/60000));if(m<60)return m+'m ago';var h=Math.round(m/60);if(h<24)return h+'h ago';return Math.round(h/24)+'d ago';}
+  function shortLabel(l){if(/BCN-in MAD/.test(l))return 'Open-jaw BCN → MAD';if(/Barcelona/.test(l))return 'Barcelona return';if(/Madrid/.test(l))return 'Madrid return';return l;}
   function renderFlights(){
     var box=document.getElementById('home-flights');if(!box)return;
     var F=window.__flights,T=window.__ftargets||{};
     if(!F||!F.routes){box.innerHTML='';return;}
     var keys=Object.keys(F.routes);
-    var h='<div class="fl-card"><div class="fl-head"><span>Flight watch</span><span class="fl-when">'+(F.updated?('updated '+flAgo(F.updated)):'')+'</span></div><div class="fl-note">Alerts fire only within $500 of target</div>';
+    var gt=0;for(var i=0;i<keys.length;i++){var tk=T[keys[i]];if(tk&&Number(tk.target)){gt=Number(tk.target);break;}}
+    if(!gt)gt=Number(F.routes[keys[0]].target)||2600;
+    var h='<div class="fl-card"><div class="fl-head"><span>Flight watch</span>'
+      +'<label class="fl-tgtlab">Target $<input id="flTarget" type="number" class="fl-tgt" value="'+gt+'" inputmode="numeric"></label></div>'
+      +'<div class="fl-note">Alerts only within $500 of target'+(F.updated?(' &middot; '+flAgo(F.updated)):'')+'</div>';
     keys.forEach(function(k){
       var r=F.routes[k];
-      var tgt=(T[k]&&Number(T[k].target))?Number(T[k].target):(Number(r.target)||0);
-      var band=(T[k]&&T[k].notifyWithinAmt!=null)?Number(T[k].notifyWithinAmt):(r.within!=null?Number(r.within):500);
-      var deal=tgt&&r.price<=tgt,near=tgt&&!deal&&r.price<=tgt+band;
+      var deal=r.price<=gt,near=!deal&&r.price<=gt+500;
       var stops=r.stops?(r.stops+' stop'+(r.stops>1?'s':'')):'nonstop';
-      h+='<div class="fl-row '+(deal?'fl-deal':near?'fl-near':'')+'">'
-        +'<div class="fl-top"><span class="fl-lbl">'+flEsc(r.label)+'</span><span class="fl-price">'+flMoney(r.price)+'</span></div>'
-        +'<div class="fl-sub">'+flEsc(r.dateOut||'')+' &rarr; '+flEsc(r.dateBack||'')+' &middot; '+flEsc(r.airline||'')+' &middot; '+stops+'</div>'
-        +'<div class="fl-ctl"><label>Target $<input type="number" class="fl-tgt" data-k="'+flEsc(k)+'" value="'+tgt+'" inputmode="numeric"></label>'
-        +'<a class="fl-open" href="'+flEsc(r.link||'#')+'" target="_blank" rel="noopener">View flights &rsaquo;</a></div>'
-        +'</div>';
+      h+='<a class="fl-row2 '+(deal?'fl-deal':near?'fl-near':'')+'" href="'+flEsc(r.link||'#')+'" target="_blank" rel="noopener">'
+        +'<span class="fl-r-main"><span class="fl-lbl">'+flEsc(shortLabel(r.label))+'</span><span class="fl-sub">'+flEsc(r.airline||'')+' &middot; '+stops+'</span></span>'
+        +'<span class="fl-price">'+flMoney(r.price)+'<span class="fl-arr">&rsaquo;</span></span></a>';
     });
     h+='</div>';box.innerHTML=h;
-    box.querySelectorAll('.fl-tgt').forEach(function(inp){
-      inp.addEventListener('change',function(){
-        var v=Math.round(parseFloat(inp.value)||0);if(!v)return;
-        var k=inp.getAttribute('data-k');
-        var band=(window.__ftargets&&window.__ftargets[k]&&window.__ftargets[k].notifyWithinAmt!=null)?window.__ftargets[k].notifyWithinAmt:500;
-        if(fbReady&&db){try{db.ref(ROOM+'/flightTargets/'+k).set({target:v,notifyWithinAmt:band});}catch(e){}toast('Target set: '+flMoney(v));}
-        else{toast('Open the live app to save targets');}
-      });
+    var inp=document.getElementById('flTarget');
+    if(inp)inp.addEventListener('change',function(){
+      var v=Math.round(parseFloat(inp.value)||0);if(!v)return;
+      if(fbReady&&db){try{keys.forEach(function(k){db.ref(ROOM+'/flightTargets/'+k).set({target:v,notifyWithinAmt:500});});}catch(e){}toast('Target set: '+flMoney(v));}
+      else{toast('Open the live app to save');}
     });
   }
   function setPhaseTab(days){
@@ -1269,7 +1249,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();renderFlights();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 23';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 24';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
