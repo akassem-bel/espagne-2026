@@ -1268,8 +1268,8 @@ main .card + .card{margin-top:1rem;}
     else{num.textContent='¡Olé!';lab.textContent='trip complete';}
     setPhaseTab(days);
   }
-  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 22';
+  renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();renderFlights();
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 23';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
@@ -1292,6 +1292,8 @@ main .card + .card{margin-top:1rem;}
           if(!typing){renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();}
           else{ae.addEventListener('blur',function bf(){ae.removeEventListener('blur',bf);renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();},{once:true});}
         }
+        window.__flights=d.flights||null;window.__ftargets=d.flightTargets||{};
+        var _fa=document.activeElement;if(!(_fa&&_fa.classList&&_fa.classList.contains('fl-tgt')))renderFlights();
         if(first){var s=document.getElementById('synced');if(s)s.textContent=' · live sync';toast('Live sync on');first=false;}
       });
     }catch(e){}
