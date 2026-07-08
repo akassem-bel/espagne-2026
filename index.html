@@ -182,6 +182,21 @@ main .card,main .match,main .leg,main .compare,main .lgroup,main .facts,main .tl
 @keyframes slideBack{from{opacity:.5;transform:translateX(-55%);}to{opacity:1;transform:translateX(0);}}
 .view.slide-back{animation:slideBack .3s var(--ease);}
 @media (prefers-reduced-motion:reduce){.view.slide-back{animation:none;}}
+.fl-card{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:.9rem 1rem;margin-top:1.1rem;}
+.fl-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font-head);font-size:1.2rem;margin-bottom:.4rem;}
+.fl-when{font-family:var(--font-body);font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
+.fl-row{padding:.65rem 0;border-top:1px solid var(--line-soft);}
+.fl-row:first-of-type{border-top:none;}
+.fl-top{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;}
+.fl-lbl{font-weight:600;}
+.fl-price{font-family:var(--font-head);font-size:1.55rem;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.fl-sub{color:var(--muted);font-size:.8rem;margin-top:.12rem;}
+.fl-ctl{display:flex;justify-content:space-between;align-items:center;margin-top:.45rem;gap:.6rem;}
+.fl-ctl label{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:.3rem;}
+.fl-tgt{width:5.4rem;background:var(--bg);border:1px solid var(--line);color:var(--ink);border-radius:7px;padding:.34rem .5rem;font-size:.9rem;font-variant-numeric:tabular-nums;}
+.fl-open{color:var(--accent);text-decoration:none;font-weight:600;font-size:.82rem;padding:.34rem .6rem;border:1px solid var(--line-soft);border-radius:7px;white-space:nowrap;}
+.fl-deal .fl-price{color:#3ddc84;}
+.fl-near .fl-price{color:#f0a03b;}
 .rv{opacity:0;transform:translateY(10px);animation:rise .6s var(--ease) forwards;}
 @keyframes rise{to{opacity:1;transform:none;}}
 @media (prefers-reduced-motion:reduce){.rv{animation:none;opacity:1;transform:none;}}
@@ -458,6 +473,7 @@ main .card + .card{margin-top:1rem;}
 
     <div class="hstats rv" id="home-stats" style="animation-delay:.26s"></div>
     <div class="rv" id="home-next" style="animation-delay:.3s"></div>
+    <div class="rv" id="home-flights" style="animation-delay:.32s"></div>
 
     <div class="match rv" style="animation-delay:.34s">
       <div class="mk">La Liga &middot; Matchday 1 &middot; Season opener</div>
@@ -1197,6 +1213,39 @@ main .card + .card{margin-top:1rem;}
       next.forEach(function(it,i){rows[i].querySelector('.hn-w').textContent=wLabel[it.w];rows[i].querySelector('.hn-t').textContent=it.t;rows[i].addEventListener('click',function(){show('alist');});});
     }
   }
+  function flEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function flMoney(n){return '$'+Number(Math.round(n)).toLocaleString('en-CA');}
+  function flAgo(iso){var t=Date.parse(iso);if(isNaN(t))return '';var m=Math.max(0,Math.round((Date.now()-t)/60000));if(m<60)return m+'m ago';var h=Math.round(m/60);if(h<24)return h+'h ago';return Math.round(h/24)+'d ago';}
+  function renderFlights(){
+    var box=document.getElementById('home-flights');if(!box)return;
+    var F=window.__flights,T=window.__ftargets||{};
+    if(!F||!F.routes){box.innerHTML='';return;}
+    var keys=Object.keys(F.routes);
+    var h='<div class="fl-card"><div class="fl-head"><span>Flight watch</span><span class="fl-when">'+(F.updated?('updated '+flAgo(F.updated)):'')+'</span></div>';
+    keys.forEach(function(k){
+      var r=F.routes[k];
+      var tgt=(T[k]&&Number(T[k].target))?Number(T[k].target):(Number(r.target)||0);
+      var within=(T[k]&&T[k].notifyWithinPct!=null)?Number(T[k].notifyWithinPct):(r.within!=null?Number(r.within):10);
+      var deal=tgt&&r.price<=tgt,near=tgt&&!deal&&r.price<=tgt*(1+within/100);
+      var stops=r.stops?(r.stops+' stop'+(r.stops>1?'s':'')):'nonstop';
+      h+='<div class="fl-row '+(deal?'fl-deal':near?'fl-near':'')+'">'
+        +'<div class="fl-top"><span class="fl-lbl">'+flEsc(r.label)+'</span><span class="fl-price">'+flMoney(r.price)+'</span></div>'
+        +'<div class="fl-sub">'+flEsc(r.dateOut||'')+' &rarr; '+flEsc(r.dateBack||'')+' &middot; '+flEsc(r.airline||'')+' &middot; '+stops+'</div>'
+        +'<div class="fl-ctl"><label>Target $<input type="number" class="fl-tgt" data-k="'+flEsc(k)+'" value="'+tgt+'" inputmode="numeric"></label>'
+        +'<a class="fl-open" href="'+flEsc(r.link||'#')+'" target="_blank" rel="noopener">View flights &rsaquo;</a></div>'
+        +'</div>';
+    });
+    h+='</div>';box.innerHTML=h;
+    box.querySelectorAll('.fl-tgt').forEach(function(inp){
+      inp.addEventListener('change',function(){
+        var v=Math.round(parseFloat(inp.value)||0);if(!v)return;
+        var k=inp.getAttribute('data-k');
+        var within=(window.__ftargets&&window.__ftargets[k]&&window.__ftargets[k].notifyWithinPct!=null)?window.__ftargets[k].notifyWithinPct:10;
+        if(fbReady&&db){try{db.ref(ROOM+'/flightTargets/'+k).set({target:v,notifyWithinPct:within});}catch(e){}toast('Target set: '+flMoney(v));}
+        else{toast('Open the live app to save targets');}
+      });
+    });
+  }
   function setPhaseTab(days){
     var b=document.getElementById('tabCtx');if(!b)return;
     var view=(days>0)?'alist':'expenses',label=(days>0)?'Book':'Spend';
@@ -1219,7 +1268,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 20';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 21';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
