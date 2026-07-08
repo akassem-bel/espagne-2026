@@ -185,6 +185,7 @@ main .card,main .match,main .leg,main .compare,main .lgroup,main .facts,main .tl
 .fl-card{border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);padding:.9rem 1rem;margin-top:1.1rem;}
 .fl-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font-head);font-size:1.2rem;margin-bottom:.4rem;}
 .fl-when{font-family:var(--font-body);font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;}
+.fl-note{color:var(--dim);font-size:.72rem;margin:-.15rem 0 .5rem;}
 .fl-row{padding:.65rem 0;border-top:1px solid var(--line-soft);}
 .fl-row:first-of-type{border-top:none;}
 .fl-top{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;}
@@ -1221,12 +1222,12 @@ main .card + .card{margin-top:1rem;}
     var F=window.__flights,T=window.__ftargets||{};
     if(!F||!F.routes){box.innerHTML='';return;}
     var keys=Object.keys(F.routes);
-    var h='<div class="fl-card"><div class="fl-head"><span>Flight watch</span><span class="fl-when">'+(F.updated?('updated '+flAgo(F.updated)):'')+'</span></div>';
+    var h='<div class="fl-card"><div class="fl-head"><span>Flight watch</span><span class="fl-when">'+(F.updated?('updated '+flAgo(F.updated)):'')+'</span></div><div class="fl-note">Alerts fire only within $500 of target</div>';
     keys.forEach(function(k){
       var r=F.routes[k];
       var tgt=(T[k]&&Number(T[k].target))?Number(T[k].target):(Number(r.target)||0);
-      var within=(T[k]&&T[k].notifyWithinPct!=null)?Number(T[k].notifyWithinPct):(r.within!=null?Number(r.within):10);
-      var deal=tgt&&r.price<=tgt,near=tgt&&!deal&&r.price<=tgt*(1+within/100);
+      var band=(T[k]&&T[k].notifyWithinAmt!=null)?Number(T[k].notifyWithinAmt):(r.within!=null?Number(r.within):500);
+      var deal=tgt&&r.price<=tgt,near=tgt&&!deal&&r.price<=tgt+band;
       var stops=r.stops?(r.stops+' stop'+(r.stops>1?'s':'')):'nonstop';
       h+='<div class="fl-row '+(deal?'fl-deal':near?'fl-near':'')+'">'
         +'<div class="fl-top"><span class="fl-lbl">'+flEsc(r.label)+'</span><span class="fl-price">'+flMoney(r.price)+'</span></div>'
@@ -1240,8 +1241,8 @@ main .card + .card{margin-top:1rem;}
       inp.addEventListener('change',function(){
         var v=Math.round(parseFloat(inp.value)||0);if(!v)return;
         var k=inp.getAttribute('data-k');
-        var within=(window.__ftargets&&window.__ftargets[k]&&window.__ftargets[k].notifyWithinPct!=null)?window.__ftargets[k].notifyWithinPct:10;
-        if(fbReady&&db){try{db.ref(ROOM+'/flightTargets/'+k).set({target:v,notifyWithinPct:within});}catch(e){}toast('Target set: '+flMoney(v));}
+        var band=(window.__ftargets&&window.__ftargets[k]&&window.__ftargets[k].notifyWithinAmt!=null)?window.__ftargets[k].notifyWithinAmt:500;
+        if(fbReady&&db){try{db.ref(ROOM+'/flightTargets/'+k).set({target:v,notifyWithinAmt:band});}catch(e){}toast('Target set: '+flMoney(v));}
         else{toast('Open the live app to save targets');}
       });
     });
@@ -1268,7 +1269,7 @@ main .card + .card{margin-top:1rem;}
     setPhaseTab(days);
   }
   renderCheck();renderBudget();renderPack();renderActivities();renderExpenses();buildTimeline();renderDaySel();renderDay(curDay);updateCountdown();renderHome();
-  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 21';
+  var _bt=document.getElementById('buildTag');if(_bt)_bt.textContent='build 22';
 
   /* ---- realtime sync (Firebase Realtime Database) ---- */
   function initSync(){
